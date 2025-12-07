@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wellista — Wellness for Your Cycle</title>
+  <style>
+    :root{--bg:#fff6fb;--accent:#ec4899;--card:#ffffff;--muted:#6b7280;--glass:rgba(255,255,255,0.6)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#fff0f6 0%, #f3f0ff 100%);color:#111;min-height:100vh}
+    body.dark{background:linear-gradient(180deg,#1e1b4b 0%, #0f172a 100%);color:#e5e7eb}
+    body.dark .card{background:#1e293b;color:#e5e7eb;border:1px solid #334155}
+    body.dark button{background:#db2777}
+    body.dark .btn-ghost{background:transparent;border:1px solid #475569;color:#db2777}
+    body.dark .pill{background:#1e293b;border:1px solid #475569;color:#f472b6}
+    body.dark input,body.dark select,body.dark textarea{background:#0f172a;border:1px solid #334155;color:#e5e7eb}
+    body.dark .post{background:#0f172a;border:1px solid #334155}
+    body.dark .day{background:#1e293b;border:1px solid #334155;color:#e5e7eb}
+    body.dark .period-day{background:#831843;border:1px dashed #be185d}
+    .wrap{max-width:1000px;margin:0 auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+    h1{color:var(--accent);font-size:28px}
+    h2{margin-bottom:12px}
+    nav{display:flex;gap:8px;flex-wrap:wrap}
+    button,input[type="submit"]{background:var(--accent);color:white;border:0;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:14px;transition:opacity 0.2s}
+    button:hover{opacity:0.9}
+    .btn-ghost{background:transparent;border:1px solid rgba(0,0,0,0.1);color:var(--accent)}
+    .btn-sm{padding:6px 12px;font-size:13px}
+    .card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:16px}
+    .grid{display:grid;gap:12px}
+    .cols-3{grid-template-columns:repeat(3,1fr)}
+    .cols-2{grid-template-columns:repeat(2,1fr)}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500}
+    input[type="text"],input[type="number"],input[type="date"],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e9;font-size:14px}
+    textarea{min-height:100px;font-family:inherit}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block;padding:6px 12px;background:#fff0f6;border-radius:999px;border:1px solid rgba(236,72,153,0.12);color:var(--accent);font-size:13px}
+    .small{font-size:13px}
+    .flex{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .space-y>*+*{margin-top:12px}
+    .hidden{display:none}
+    .symptom-btn{border:1px solid #eee;padding:8px 12px;border-radius:999px;background:white;cursor:pointer;font-size:13px}
+    .symptom-btn.active{background:var(--accent);color:white;border-color:var(--accent)}
+    .post{background:#fff6fb;padding:12px;border-radius:8px;border:1px solid rgba(236,72,153,0.06);margin-bottom:10px}
+    .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
+    .calendar-header{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;font-weight:600;font-size:12px;text-align:center}
+    .day{padding:12px 8px;border-radius:6px;background:white;text-align:center;border:1px solid #f3f3f4;font-size:13px}
+    .period-day{background:rgba(236,72,153,0.15);border:1px dashed rgba(236,72,153,0.4);font-weight:600}
+    .today{border:2px solid var(--accent)}
+    .chart-container{background:white;padding:16px;border-radius:8px;margin-top:12px}
+    body.dark .chart-container{background:#1e293b}
+    canvas{max-width:100%;height:auto}
+    .stat-box{text-align:center;padding:16px;background:#fff0f6;border-radius:8px;border:1px solid rgba(236,72,153,0.1)}
+    body.dark .stat-box{background:#1e293b;border:1px solid #475569}
+    .stat-value{font-size:24px;font-weight:700;color:var(--accent)}
+    .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
+    footer{margin-top:40px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);font-size:12px}
+    @media (max-width:720px){
+      .cols-3,.cols-2{grid-template-columns:1fr}
+      header{flex-direction:column;align-items:flex-start}
+      nav{width:100%}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>🌸 WELLISTA</h1>
+        <div class="small muted">Wellness for your cycle — demo (not medical advice)</div>
+      </div>
+      <nav id="topNav"></nav>
+    </header>
+
+    <main id="app"></main>
+
+    <footer>
+      <div>⚠️ This is not medical advice. For medical concerns, consult a certified healthcare professional.</div>
+      <div class="small muted" style="margin-top:8px">Built for learning & wellness tracking</div>
+    </footer>
+  </div>
+
+  <script>
+    // App state (in-memory only)
+    const state = {
+      page: 'home',
+      user: null,
+      cycleLogs: [],
+      moodLogs: [],
+      posts: [],
+      darkMode: false,
+      faqs: [
+        {q: 'Why do moods change during the cycle?', a: 'Hormone fluctuations affect neurotransmitters which influence mood. Small lifestyle changes like regular sleep, hydration, and gentle movement can help manage these changes.'},
+        {q: 'What is PMS?', a: 'PMS (premenstrual syndrome) includes physical and emotional symptoms like mood changes, bloating, and cramps that some people experience before their period.'},
+        {q: 'Can I use this to diagnose conditions?', a: 'No — this tool is for awareness and tracking only. Always consult a healthcare professional for medical advice and diagnosis.'}
+      ]
+    };
+
+    // Utilities
+    function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+    function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+    
+    function isMedicalQuestion(text){
+      const flags = ['diagnos','should i','am i sick','pain that won','urgent','prescription','medicine for','hospital'];
+      const lower = text.toLowerCase();
+      return flags.some(k=>lower.includes(k));
+    }
+
+    // Navigation
+    const navEl = document.getElementById('topNav');
+    function renderNav(){
+      const logged = !!state.user;
+      let html = '';
+      if(!logged){
+        html = '<button onclick="go(\'home\')" class="btn-ghost btn-sm">Home</button><button onclick="go(\'login\')" class="btn-sm">Login / Sign up</button>';
+      } else {
+        const items = ['dashboard','tracker','wellness','food','qa','community','settings'];
+        html = items.map(i=>`<button onclick="go('${i}')" class="btn-ghost btn-sm">${capitalize(i)}</button>`).join('');
+        html += `<button onclick="toggleDarkMode()" class="btn-ghost btn-sm">🌙</button>`;
+        html += `<span class="pill">${escapeHtml(state.user.name)}</span>`;
+      }
+      navEl.innerHTML = html;
+    }
+
+    function go(page){
+      state.page = page;
+      render();
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function render(){
+      renderNav();
+      const p = state.page;
+      if(p==='home') renderHome();
+      else if(p==='login') renderLogin();
+      else if(p==='dashboard') renderDashboard();
+      else if(p==='tracker') renderTracker();
+      else if(p==='wellness') renderWellness();
+      else if(p==='food') renderFood();
+      else if(p==='qa') renderQA();
+      else if(p==='community') renderCommunity();
+      else if(p==='settings') renderSettings();
+      else renderHome();
+    }
+
+    // Dark mode
+    function toggleDarkMode(){
+      state.darkMode = !state.darkMode;
+      document.body.classList.toggle('dark', state.darkMode);
+    }
+
+    // Pages
+    function renderHome(){
+      app.innerHTML = `
+        <div class="card">
+          <h2>Welcome to Wellista 🌸</h2>
+          <p class="muted">Your personal cycle & wellness companion. Track periods, log moods, get wellness tips and nutritious food ideas.</p>
+
+          <div class="grid cols-3" style="margin-top:20px">
+            <div class="card">
+              <h3 style="font-size:18px">📅 Track Cycle</h3>
+              <p class="small muted">Log period dates & symptoms</p>
+              <button onclick="go('login')" style="margin-top:12px">Get Started</button>
+            </div>
+            <div class="card">
+              <h3 style="font-size:18px">💚 Wellness Tips</h3>
+              <p class="small muted">Sleep, hydration, movement</p>
+              <button onclick="go('wellness')" style="margin-top:12px">Learn More</button>
+            </div>
+            <div class="card">
+              <h3 style="font-size:18px">🥗 Food Ideas</h3>
+              <p class="small muted">Nourishing meals & snacks</p>
+              <button onclick="go('food')" style="margin-top:12px">Explore</button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:20px">
+            <h3>Why track your cycle?</h3>
+            <p class="small muted">Understanding your cycle patterns can help you:</p>
+            <ul class="small muted" style="margin-top:8px;margin-left:20px">
+              <li>Predict when your period might start</li>
+              <li>Notice patterns in mood and energy levels</li>
+              <li>Plan activities around your cycle phases</li>
+              <li>Communicate better with healthcare providers</li>
+            </ul>
+            <p class="small muted" style="margin-top:12px"><strong>Important:</strong> This tool provides general information only and does not replace professional medical care.</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLogin(){
+      app.innerHTML = `
+        <div class="card" style="max-width:600px;margin:0 auto">
+          <h2>Create Your Account</h2>
+          <p class="small muted">Get started with personalized cycle tracking</p>
+
+          <div style="margin-top:20px">
+            <label>Name *</label>
+            <input id="inp_name" type="text" placeholder="Your name" />
+          </div>
+
+          <div style="margin-top:12px">
+            <label>Age (optional)</label>
+            <input id="inp_age" type="number" min="8" max="100" placeholder="Your age" />
+          </div>
+
+          <div style="margin-top:12px">
+            <label>Food preferences (optional)</label>
+            <input id="inp_food" type="text" placeholder="e.g., vegetarian, no dairy" />
+          </div>
+
+          <div class="grid cols-2" style="margin-top:12px">
+            <div>
+              <label>Sleep hours (avg)</label>
+              <select id="inp_sleep">
+                <option value="">Select</option>
+                <option>Less than 6</option>
+                <option>6-8 hours</option>
+                <option>8+ hours</option>
+              </select>
+            </div>
+            <div>
+              <label>Activity level</label>
+              <select id="inp_activity">
+                <option value="">Select</option>
+                <option>Sedentary</option>
+                <option>Light</option>
+                <option>Moderate</option>
+                <option>Active</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex" style="margin-top:20px">
+            <button onclick="submitSignup()">Create Account</button>
+            <button class="btn-ghost" onclick="go('home')">Cancel</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function submitSignup(){
+      const name = document.getElementById('inp_name').value.trim();
+      if(!name){alert('Please enter your name');return}
+      
+      state.user = {
+        name,
+        age: document.getElementById('inp_age').value,
+        food: document.getElementById('inp_food').value,
+        sleep: document.getElementById('inp_sleep').value,
+        activity: document.getElementById('inp_activity').value,
+        joined: Date.now()
+      };
+      go('dashboard');
+    }
+
+    function estimateNextPeriod(){
+      if(!state.cycleLogs.length) return {next:null,avg:null};
+      const starts = state.cycleLogs.filter(c=>c.type==='start').sort((a,b)=>new Date(a.date)-new Date(b.date));
+      
+      if(starts.length<2){
+        const d = new Date(starts[0]?.date);
+        d.setDate(d.getDate()+28);
+        return {next: starts.length ? d : null, avg:null};
+      }
+      
+      const diffs = [];
+      for(let i=1;i<starts.length;i++){
+        const a=new Date(starts[i-1].date), b=new Date(starts[i].date);
+        diffs.push((b-a)/(1000*60*60*24));
+      }
+      const avg = Math.round(diffs.reduce((s,x)=>s+x,0)/diffs.length);
+      const last = new Date(starts[starts.length-1].date);
+      last.setDate(last.getDate()+avg);
+      return {next:last, avg};
+    }
+
+    function renderDashboard(){
+      const est = estimateNextPeriod();
+      const recentMoods = state.moodLogs.slice(0,5);
+      
+      app.innerHTML = `
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
+            <div>
+              <h2>Hello, ${escapeHtml(state.user.name)}! 🌸</h2>
+              <div class="small muted">Member since ${new Date(state.user.joined).toLocaleDateString()}</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Next Period</div>
+              <div class="stat-value" style="font-size:14px">${est.next ? est.next.toLocaleDateString() : 'Needs data'}</div>
+              <div class="small muted" style="margin-top:4px">Avg: ${est.avg ? est.avg+' days' : '—'}</div>
+            </div>
+          </div>
+
+          <div class="grid cols-2" style="margin-top:20px">
+            <div class="card">
+              <h3 style="font-size:16px">😊 How are you feeling today?</h3>
+              <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+                <button onclick="quickMood('Happy')" class="btn-sm">😊 Happy</button>
+                <button onclick="quickMood('Neutral')" class="btn-sm">😐 Neutral</button>
+                <button onclick="quickMood('Low')" class="btn-sm">😔 Low</button>
+                <button onclick="quickMood('Tired')" class="btn-sm">😴 Tired</button>
+                <button onclick="quickMood('Energetic')" class="btn-sm">⚡ Energetic</button>
+              </div>
+              ${recentMoods.length ? `<div style="margin-top:12px"><div class="small muted">Recent moods:</div>${recentMoods.map(m=>`<span class="pill" style="margin:4px">${m.mood}</span>`).join('')}</div>` : ''}
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">💡 Today's Wellness Tips</h3>
+              <ul class="small muted" style="margin-top:8px;margin-left:20px">
+                <li>Drink water throughout the day</li>
+                <li>Get 7-9 hours of sleep tonight</li>
+                <li>Take a 10-minute walk</li>
+                <li>Eat something nutritious</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="grid cols-3" style="margin-top:16px">
+            <div class="card">
+              <h4 style="font-size:14px">📊 Stats</h4>
+              <div class="small muted">Logs: ${state.cycleLogs.length}</div>
+              <div class="small muted">Moods: ${state.moodLogs.length}</div>
+              <button onclick="go('tracker')" class="btn-sm" style="margin-top:8px">Add Log</button>
+            </div>
+            <div class="card">
+              <h4 style="font-size:14px">🥗 Nutrition</h4>
+              <div class="small muted">Browse food ideas</div>
+              <button onclick="go('food')" class="btn-sm" style="margin-top:8px">View Foods</button>
+            </div>
+            <div class="card">
+              <h4 style="font-size:14px">💬 Community</h4>
+              <div class="small muted">Share & connect</div>
+              <button onclick="go('community')" class="btn-sm" style="margin-top:8px">Join</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function quickMood(mood){
+      state.moodLogs.unshift({mood, date: new Date().toISOString()});
+      if(state.moodLogs.length>100) state.moodLogs.pop();
+      alert(`Mood logged: ${mood} 💚`);
+      render();
+    }
+
+    function renderTracker(){
+      const list = state.cycleLogs.slice().reverse().slice(0,10).map(l=>
+        `<li style="padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
+          <strong>${escapeHtml(l.type==='start'?'Period Start':'Period End')}</strong>: ${new Date(l.date).toLocaleDateString()}
+          ${l.symptoms && l.symptoms.length ? '<br><span class="small muted">Symptoms: '+escapeHtml(l.symptoms.join(', '))+'</span>' : ''}
+        </li>`
+      ).join('');
+
+      app.innerHTML = `
+        <div class="card">
+          <h2>Cycle Tracker 📅</h2>
+
+          <form onsubmit="event.preventDefault(); saveCycleLog();" style="margin-top:16px">
+            <div class="grid cols-2">
+              <div>
+                <label>Date *</label>
+                <input id="cycle_date" type="date" required max="${new Date().toISOString().split('T')[0]}" />
+              </div>
+              <div>
+                <label>Type *</label>
+                <select id="cycle_type">
+                  <option value="start">Period Start</option>
+                  <option value="end">Period End</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-top:12px">
+              <label>Symptoms (tap to select)</label>
+              <div id="symptomsRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+                ${['Cramps','Headache','Fatigue','Bloating','Mood swings','Back pain','Anxiety','Nausea'].map(s=>
+                  `<button type="button" onclick="toggleSymptom(this,'${s}')" class="symptom-btn">${s}</button>`
+                ).join('')}
+              </div>
+              <input id="symptoms_input" type="hidden" value="[]" />
+            </div>
+
+            <div class="flex" style="margin-top:16px">
+              <button type="submit">Save Log</button>
+              <button type="button" class="btn-ghost" onclick="clearCycleForm()">Clear</button>
+              <button type="button" class="btn-ghost" onclick="exportCSV()">Export CSV</button>
+            </div>
+          </form>
+
+          ${renderCalendar()}
+
+          <div style="margin-top:20px">
+            <h3>Recent Logs</h3>
+            ${state.cycleLogs.length ? `<ul style="list-style:none">${list}</ul>` : '<p class="small muted">No logs yet. Start tracking above!</p>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCalendar(){
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const firstDay = new Date(year, month, 1);
+      const startWeekday = firstDay.getDay();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      const today = now.getDate();
+
+      const periodDates = new Set();
+      state.cycleLogs.forEach(l => {
+        if(new Date(l.date).getMonth() === month && new Date(l.date).getFullYear() === year) {
+          periodDates.add(new Date(l.date).getDate());
+        }
+      });
+
+      let html = `<div style="margin-top:20px">
+        <h3>${firstDay.toLocaleDateString('en-US', {month:'long', year:'numeric'})}</h3>
+        <div class="calendar-header">
+          ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div>${d}</div>`).join('')}
+        </div>
+        <div class="calendar">`;
+
+      for(let i=0; i<startWeekday; i++){
+        html += `<div class="day" style="opacity:0.3"></div>`;
+      }
+
+      for(let i=1; i<=daysInMonth; i++){
+        const isPeriod = periodDates.has(i);
+        const isToday = i === today;
+        html += `<div class="day ${isPeriod?'period-day':''} ${isToday?'today':''}">${i}</div>`;
+      }
+
+      html += '</div></div>';
+      return html;
+    }
+
+    function toggleSymptom(btn, name){
+      btn.classList.toggle('active');
+      const active = Array.from(document.querySelectorAll('#symptomsRow .symptom-btn.active')).map(b=>b.textContent);
+      document.getElementById('symptoms_input').value = JSON.stringify(active);
+    }
+
+    function saveCycleLog(){
+      const d = document.getElementById('cycle_date').value;
+      const t = document.getElementById('cycle_type').value;
+      let symptoms = [];
+      try{ symptoms = JSON.parse(document.getElementById('symptoms_input').value || '[]') }catch(e){}
+      if(!d) return alert('Please select a date');
+      
+      state.cycleLogs.push({date: d, type: t, symptoms});
+      alert('Log saved! 📝');
+      render();
+    }
+
+    function clearCycleForm(){
+      document.getElementById('cycle_date').value='';
+      document.getElementById('symptoms_input').value='[]';
+      document.querySelectorAll('#symptomsRow .symptom-btn.active').forEach(b=>b.classList.remove('active'));
+    }
+
+    function exportCSV(){
+      if(!state.cycleLogs.length){
+        alert('No cycle data to export');
+        return;
+      }
+
+      let csv = 'Date,Type,Symptoms\n';
+      state.cycleLogs.forEach(c => {
+        const symptoms = c.symptoms ? c.symptoms.join('; ') : '';
+        csv += `${c.date},${c.type},"${symptoms}"\n`;
+      });
+
+      const blob = new Blob([csv], {type: 'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'wellista-cycle-log.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderWellness(){
+      app.innerHTML = `
+        <div class="card">
+          <h2>Wellness Center 💚</h2>
+          <p class="muted">Evidence-based tips for managing your cycle</p>
+
+          <div class="grid cols-2" style="margin-top:20px">
+            <div class="card">
+              <h3 style="font-size:16px">💧 Hydration</h3>
+              <p class="small muted">Drink 8-10 glasses of water daily. Proper hydration can help reduce bloating and improve energy levels. Add lemon or cucumber for flavor.</p>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">😴 Sleep</h3>
+              <p class="small muted">Aim for 7-9 hours per night. Consistent sleep schedules help regulate hormones and improve mood. Avoid screens 1 hour before bed.</p>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">🚶 Movement</h3>
+              <p class="small muted">Gentle exercise like walking, yoga, or stretching can ease cramps and boost mood. Listen to your body and rest when needed.</p>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">🧘 Stress Management</h3>
+              <p class="small muted">Try deep breathing, meditation, or journaling. Stress can affect cycle regularity and symptom severity.</p>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">🌡️ Heat Therapy</h3>
+              <p class="small muted">Heating pads or warm baths can help relieve cramps and lower back pain. Use for 15-20 minutes at a time.</p>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">📝 Track Patterns</h3>
+              <p class="small muted">Notice how symptoms vary across your cycle. Understanding patterns helps you prepare and plan activities accordingly.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:20px;background:#fff7ed">
+            <h3 style="font-size:16px">⚠️ When to See a Doctor</h3>
+            <ul class="small muted" style="margin-left:20px;margin-top:8px">
+              <li>Severe pain that interferes with daily activities</li>
+              <li>Very heavy bleeding (soaking through pads/tampons hourly)</li>
+              <li>Periods lasting longer than 7 days</li>
+              <li>Irregular cycles that suddenly change</li>
+              <li>Any concerns about your menstrual health</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFood(){
+      app.innerHTML = `
+        <div class="card">
+          <h2>Nourishing Foods 🥗</h2>
+          <p class="muted">Foods that may help support you through your cycle</p>
+
+          <div class="grid cols-2" style="margin-top:20px">
+            <div class="card">
+              <h3 style="font-size:16px">🥬 Iron-Rich Foods</h3>
+              <p class="small muted">Important during and after your period:</p>
+              <ul class="small" style="margin-left:20px;margin-top:8px">
+                <li>Leafy greens (spinach, kale)</li>
+                <li>Lentils and beans</li>
+                <li>Fortified cereals</li>
+                <li>Lean meats</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">🥜 Magnesium Sources</h3>
+              <p class="small muted">May help with cramps and mood:</p>
+              <ul class="small" style="margin-left:20px;margin-top:8px">
+                <li>Bananas</li>
+                <li>Nuts and seeds</li>
+                <li>Dark chocolate (in moderation)</li>
+                <li>Dark chocolate (in moderation)</li>
+                <li>Avocados</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">🐟 Omega-3 Fatty Acids</h3>
+              <p class="small muted">Anti-inflammatory benefits:</p>
+              <ul class="small" style="margin-left:20px;margin-top:8px">
+                <li>Fatty fish (salmon, sardines)</li>
+                <li>Walnuts</li>
+                <li>Chia seeds and flaxseeds</li>
+                <li>Algae-based supplements</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">🍊 Vitamin C Foods</h3>
+              <p class="small muted">Helps iron absorption:</p>
+              <ul class="small" style="margin-left:20px;margin-top:8px">
+                <li>Citrus fruits</li>
+                <li>Bell peppers</li>
+                <li>Strawberries</li>
+                <li>Tomatoes</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">🥛 Calcium-Rich Foods</h3>
+              <p class="small muted">May help reduce PMS symptoms:</p>
+              <ul class="small" style="margin-left:20px;margin-top:8px">
+                <li>Dairy or fortified plant milk</li>
+                <li>Yogurt</li>
+                <li>Tofu</li>
+                <li>Broccoli</li>
+              </ul>
+            </div>
+
+            <div class="card">
+              <h3 style="font-size:16px">🌾 Complex Carbs</h3>
+              <p class="small muted">Sustained energy and mood support:</p>
+              <ul class="small" style="margin-left:20px;margin-top:8px">
+                <li>Whole grain bread</li>
+                <li>Brown rice</li>
+                <li>Oatmeal</li>
+                <li>Quinoa</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="card" style="margin-top:20px">
+            <h3 style="font-size:16px">💡 Sample Meal Ideas</h3>
+            <div class="grid cols-2" style="margin-top:12px">
+              <div>
+                <strong class="small">Breakfast:</strong>
+                <p class="small muted">Oatmeal with banana, nuts, and a sprinkle of cinnamon</p>
+              </div>
+              <div>
+                <strong class="small">Lunch:</strong>
+                <p class="small muted">Spinach salad with chickpeas, bell peppers, and lemon dressing</p>
+              </div>
+              <div>
+                <strong class="small">Snack:</strong>
+                <p class="small muted">Dark chocolate square with a handful of almonds</p>
+              </div>
+              <div>
+                <strong class="small">Dinner:</strong>
+                <p class="small muted">Salmon with quinoa and steamed broccoli</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderQA(){
+      app.innerHTML = `
+        <div class="card">
+          <h2>Q&A Center 💬 ${state.aiReady ? '<span class="pill" style="font-size:11px">🤖 AI-Powered</span>' : ''}</h2>
+          <p class="muted">Ask questions about cycles & wellness - AI helps find the best answers!</p>
+
+          <div class="card" style="margin-top:16px">
+            <h3 style="font-size:16px">Ask a Question</h3>
+            <textarea id="qa_question" placeholder="Type your question here..." style="margin-top:8px"></textarea>
+            <button onclick="submitQuestion()" style="margin-top:12px">
+              ${state.aiReady ? '🤖 Get AI Answer' : 'Submit Question'}
+            </button>
+            <div id="qa_response" class="card hidden" style="margin-top:12px;background:#f0fdf4;border:1px solid #86efac">
+              <h4 style="font-size:14px">Response:</h4>
+              <p class="small" id="qa_answer"></p>
+              <div id="qa_related" class="hidden" style="margin-top:12px;padding-top:12px;border-top:1px solid #86efac">
+                <strong class="small">Related FAQs:</strong>
+                <div id="qa_related_list" style="margin-top:8px"></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top:20px">
+            <h3>Frequently Asked Questions</h3>
+            ${state.faqs.map(faq=>`
+              <div class="card" style="margin-top:12px">
+                <h4 style="font-size:14px">${escapeHtml(faq.q)}</h4>
+                <p class="small muted" style="margin-top:8px">${escapeHtml(faq.a)}</p>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    async function submitQuestion(){
+      const q = document.getElementById('qa_question').value.trim();
+      if(!q){alert('Please enter a question');return}
+      
+      const respDiv = document.getElementById('qa_response');
+      const answerP = document.getElementById('qa_answer');
+      const relatedDiv = document.getElementById('qa_related');
+      const relatedList = document.getElementById('qa_related_list');
+      
+      if(isMedicalQuestion(q)){
+        answerP.textContent = "⚠️ This appears to be a medical question. Please consult a certified healthcare professional for medical advice, diagnosis, or treatment. This tool provides general wellness information only.";
+        respDiv.classList.remove('hidden');
+        relatedDiv.classList.add('hidden');
+        return;
+      }
+
+      // Show loading state
+      answerP.textContent = state.aiReady ? "🤖 AI is analyzing your question..." : "Finding answer...";
+      respDiv.classList.remove('hidden');
+
+      let answer = "Thank you for your question! For personalized medical advice, please consult with a healthcare professional. You can also check our Wellness and Food sections for general tips.";
+      let relatedFAQs = [];
+
+      if(state.aiReady && state.aiModel){
+        try {
+          // Use AI to find the most relevant FAQ
+          const [questionEmbedding, faqEmbeddings] = await Promise.all([
+            state.aiModel.embed([q]),
+            state.aiModel.embed(state.faqs.map(f => f.q))
+          ]);
+
+          const questionVec = await questionEmbedding.array();
+          const faqVecs = await faqEmbeddings.array();
+
+          // Calculate cosine similarity
+          const similarities = faqVecs.map((faqVec, idx) => {
+            const similarity = cosineSimilarity(questionVec[0], faqVec);
+            return { idx, similarity, faq: state.faqs[idx] };
+          });
+
+          // Sort by similarity
+          similarities.sort((a, b) => b.similarity - a.similarity);
+
+          // Get top match if similarity is high enough
+          if(similarities[0].similarity > 0.5){
+            answer = `Based on your question, here's what I found:\n\n${similarities[0].faq.a}`;
+            
+            // Get related FAQs (top 3, excluding the best match)
+            relatedFAQs = similarities.slice(1, 4).filter(s => s.similarity > 0.3);
+          } else {
+            // Check symptom knowledge base
+            const symptomMatch = findSymptomMatch(q);
+            if(symptomMatch){
+              answer = `Here are some tips for ${symptomMatch.symptom}:\n\n${symptomMatch.tips}`;
+            }
+          }
+
+          // Cleanup tensors
+          questionEmbedding.dispose();
+          faqEmbeddings.dispose();
+
+        } catch(error){
+          console.error('AI processing error:', error);
+          answer = getFallbackAnswer(q);
+        }
+      } else {
+        answer = getFallbackAnswer(q);
+      }
+
+      answerP.textContent = answer;
+
+      // Show related FAQs if any
+      if(relatedFAQs.length > 0){
+        relatedList.innerHTML = relatedFAQs.map(r => 
+          `<div style="margin-top:6px;padding:8px;background:white;border-radius:6px">
+            <strong class="small">${escapeHtml(r.faq.q)}</strong>
+            <p class="small muted" style="margin-top:4px">${escapeHtml(r.faq.a)}</p>
+          </div>`
+        ).join('');
+        relatedDiv.classList.remove('hidden');
+      } else {
+        relatedDiv.classList.add('hidden');
+      }
+    }
+
+    function cosineSimilarity(vecA, vecB) {
+      let dotProduct = 0;
+      let normA = 0;
+      let normB = 0;
+      
+      for(let i = 0; i < vecA.length; i++){
+        dotProduct += vecA[i] * vecB[i];
+        normA += vecA[i] * vecA[i];
+        normB += vecB[i] * vecB[i];
+      }
+      
+      return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
+    }
+
+    function findSymptomMatch(question){
+      const lower = question.toLowerCase();
+      return state.symptomKnowledge.find(s => lower.includes(s.symptom));
+    }
+
+    function getFallbackAnswer(q){
+      // Simple keyword-based responses
+      const lower = q.toLowerCase();
+      let answer = "Thank you for your question! For personalized medical advice, please consult with a healthcare professional. You can also check our Wellness and Food sections for general tips.";
+      
+      if(lower.includes('cramp')){
+        answer = "Cramps are common during menstruation. Try heat therapy, gentle movement, staying hydrated, and eating magnesium-rich foods. If cramps are severe or interfere with daily activities, consult a doctor.";
+      } else if(lower.includes('mood') || lower.includes('emotion')){
+        answer = "Hormone fluctuations during the cycle can affect mood and emotions. Regular sleep, balanced nutrition, exercise, and stress management techniques may help. Track your patterns to better understand your cycle.";
+      } else if(lower.includes('irregular') || lower.includes('late')){
+        answer = "Cycle irregularity can be caused by stress, changes in weight, exercise, or other factors. If you experience sudden changes or consistently irregular cycles, it's best to consult a healthcare provider.";
+      } else if(lower.includes('food') || lower.includes('eat')){
+        answer = "Focus on iron-rich foods, whole grains, fruits, vegetables, and adequate hydration. Check our Food section for specific suggestions. Everyone's needs are different, so consider consulting a nutritionist.";
+      }
+
+      return answer;
+    }
+
+    function renderCommunity(){
+      app.innerHTML = `
+        <div class="card">
+          <h2>Community 💬</h2>
+          <p class="muted">Share experiences and support each other (demo only)</p>
+
+          <div class="card" style="margin-top:16px">
+            <h3 style="font-size:16px">Share Your Story</h3>
+            <textarea id="post_content" placeholder="Share your experience, tip, or thought..." style="margin-top:8px"></textarea>
+            <div class="flex" style="margin-top:12px">
+              <button onclick="submitPost()">Post</button>
+              <label style="display:flex;align-items:center;gap:6px">
+                <input type="checkbox" id="post_anon" />
+                <span class="small">Post anonymously</span>
+              </label>
+            </div>
+          </div>
+
+          <div style="margin-top:20px">
+            <h3>Community Posts</h3>
+            ${state.posts.length ? state.posts.map(p=>`
+              <div class="post">
+                <div style="display:flex;justify-content:space-between;align-items:start">
+                  <strong class="small">${escapeHtml(p.author)}</strong>
+                  <span class="small muted">${new Date(p.date).toLocaleString()}</span>
+                </div>
+                <p class="small" style="margin-top:8px">${escapeHtml(p.content)}</p>
+              </div>
+            `).join('') : '<p class="small muted">No posts yet. Be the first to share!</p>'}
+          </div>
+
+          <div class="card" style="margin-top:20px;background:#fef3c7">
+            <h4 style="font-size:14px">⚠️ Community Guidelines</h4>
+            <ul class="small muted" style="margin-left:20px;margin-top:8px">
+              <li>Be kind and supportive</li>
+              <li>Respect privacy — don't share personal medical details</li>
+              <li>This is not a substitute for medical advice</li>
+              <li>Report any concerning content</li>
+            </ul>
+          </div>
+        </div>
+      `;
+    }
+
+    function submitPost(){
+      const content = document.getElementById('post_content').value.trim();
+      if(!content){alert('Please enter some content');return}
+      if(content.length > 500){alert('Please keep posts under 500 characters');return}
+      
+      const anon = document.getElementById('post_anon').checked;
+      state.posts.unshift({
+        author: anon ? 'Anonymous' : state.user.name,
+        content,
+        date: new Date().toISOString()
+      });
+      if(state.posts.length > 50) state.posts.pop();
+      
+      alert('Posted! 💚');
+      render();
+    }
+
+    function renderSettings(){
+      app.innerHTML = `
+        <div class="card" style="max-width:600px;margin:0 auto">
+          <h2>Settings ⚙️</h2>
+
+          <div style="margin-top:20px">
+            <h3 style="font-size:16px">Your Profile</h3>
+            <div style="margin-top:12px">
+              <label>Name</label>
+              <input id="set_name" type="text" value="${escapeHtml(state.user.name)}" />
+            </div>
+            <div style="margin-top:12px">
+              <label>Age</label>
+              <input id="set_age" type="number" value="${escapeHtml(state.user.age||'')}" />
+            </div>
+            <div style="margin-top:12px">
+              <label>Food preferences</label>
+              <input id="set_food" type="text" value="${escapeHtml(state.user.food||'')}" />
+            </div>
+            <button onclick="saveSettings()" style="margin-top:12px">Save Changes</button>
+          </div>
+
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06)">
+            <h3 style="font-size:16px">Data & Privacy</h3>
+            <p class="small muted" style="margin-top:8px">Your data is stored locally in this session only. No data is sent to external servers. All data will be cleared when you close this page.</p>
+            <button onclick="clearAllData()" class="btn-ghost" style="margin-top:12px;color:#dc2626">Clear All Data</button>
+          </div>
+
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06)">
+            <h3 style="font-size:16px">About Wellista</h3>
+            <p class="small muted" style="margin-top:8px">Wellista is a demo wellness tracking tool for educational purposes. It does not provide medical advice and should not replace consultation with healthcare professionals.</p>
+            <button onclick="logout()" class="btn-ghost" style="margin-top:12px">Logout</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function saveSettings(){
+      state.user.name = document.getElementById('set_name').value.trim() || state.user.name;
+      state.user.age = document.getElementById('set_age').value;
+      state.user.food = document.getElementById('set_food').value;
+      alert('Settings saved! ✓');
+      render();
+    }
+
+    function clearAllData(){
+      if(!confirm('Are you sure? This will delete all your logs and data.')) return;
+      state.cycleLogs = [];
+      state.moodLogs = [];
+      state.posts = [];
+      alert('All data cleared');
+      render();
+    }
+
+    function logout(){
+      if(!confirm('Are you sure you want to logout? All data will be lost.')) return;
+      state.user = null;
+      state.cycleLogs = [];
+      state.moodLogs = [];
+      state.posts = [];
+      go('home');
+    }
+
+    // Init
+    render();
+  </script>
+</body>
+</html>
