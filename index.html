@@ -1,923 +1,618 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Wellista — Wellness for Your Cycle</title>
-  <style>
-    :root{--bg:#fff6fb;--accent:#ec4899;--card:#ffffff;--muted:#6b7280;--glass:rgba(255,255,255,0.6)}
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#fff0f6 0%, #f3f0ff 100%);color:#111;min-height:100vh}
-    body.dark{background:linear-gradient(180deg,#1e1b4b 0%, #0f172a 100%);color:#e5e7eb}
-    body.dark .card{background:#1e293b;color:#e5e7eb;border:1px solid #334155}
-    body.dark button{background:#db2777}
-    body.dark .btn-ghost{background:transparent;border:1px solid #475569;color:#db2777}
-    body.dark .pill{background:#1e293b;border:1px solid #475569;color:#f472b6}
-    body.dark input,body.dark select,body.dark textarea{background:#0f172a;border:1px solid #334155;color:#e5e7eb}
-    body.dark .post{background:#0f172a;border:1px solid #334155}
-    body.dark .day{background:#1e293b;border:1px solid #334155;color:#e5e7eb}
-    body.dark .period-day{background:#831843;border:1px dashed #be185d}
-    .wrap{max-width:1000px;margin:0 auto;padding:20px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px}
-    h1{color:var(--accent);font-size:28px}
-    h2{margin-bottom:12px}
-    nav{display:flex;gap:8px;flex-wrap:wrap}
-    button,input[type="submit"]{background:var(--accent);color:white;border:0;padding:10px 16px;border-radius:8px;cursor:pointer;font-size:14px;transition:opacity 0.2s}
-    button:hover{opacity:0.9}
-    .btn-ghost{background:transparent;border:1px solid rgba(0,0,0,0.1);color:var(--accent)}
-    .btn-sm{padding:6px 12px;font-size:13px}
-    .card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08);margin-bottom:16px}
-    .grid{display:grid;gap:12px}
-    .cols-3{grid-template-columns:repeat(3,1fr)}
-    .cols-2{grid-template-columns:repeat(2,1fr)}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:500}
-    input[type="text"],input[type="number"],input[type="date"],select,textarea{width:100%;padding:10px;border-radius:8px;border:1px solid #e6e6e9;font-size:14px}
-    textarea{min-height:100px;font-family:inherit}
-    .muted{color:var(--muted)}
-    .pill{display:inline-block;padding:6px 12px;background:#fff0f6;border-radius:999px;border:1px solid rgba(236,72,153,0.12);color:var(--accent);font-size:13px}
-    .small{font-size:13px}
-    .flex{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
-    .space-y>*+*{margin-top:12px}
-    .hidden{display:none}
-    .symptom-btn{border:1px solid #eee;padding:8px 12px;border-radius:999px;background:white;cursor:pointer;font-size:13px}
-    .symptom-btn.active{background:var(--accent);color:white;border-color:var(--accent)}
-    .post{background:#fff6fb;padding:12px;border-radius:8px;border:1px solid rgba(236,72,153,0.06);margin-bottom:10px}
-    .calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:12px}
-    .calendar-header{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px;font-weight:600;font-size:12px;text-align:center}
-    .day{padding:12px 8px;border-radius:6px;background:white;text-align:center;border:1px solid #f3f3f4;font-size:13px}
-    .period-day{background:rgba(236,72,153,0.15);border:1px dashed rgba(236,72,153,0.4);font-weight:600}
-    .today{border:2px solid var(--accent)}
-    .chart-container{background:white;padding:16px;border-radius:8px;margin-top:12px}
-    body.dark .chart-container{background:#1e293b}
-    canvas{max-width:100%;height:auto}
-    .stat-box{text-align:center;padding:16px;background:#fff0f6;border-radius:8px;border:1px solid rgba(236,72,153,0.1)}
-    body.dark .stat-box{background:#1e293b;border:1px solid #475569}
-    .stat-value{font-size:24px;font-weight:700;color:var(--accent)}
-    .stat-label{font-size:12px;color:var(--muted);margin-top:4px}
-    footer{margin-top:40px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06);text-align:center;color:var(--muted);font-size:12px}
-    @media (max-width:720px){
-      .cols-3,.cols-2{grid-template-columns:1fr}
-      header{flex-direction:column;align-items:flex-start}
-      nav{width:100%}
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellista PRO | The Infinite Sisterhood</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.3s ease; background-color: #fafafa; color: #1e293b; overflow-x: hidden; }
+        
+        .tab-content { display: none; width: 100%; }
+        .tab-content.active { display: block; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hero-gradient { background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 50%, #3b82f6 100%); }
+        .nav-link { transition: all 0.2s; color: #64748b; border-bottom: 4px solid transparent; }
+        .nav-link.active { color: #f43f5e; border-bottom: 4px solid #f43f5e; }
+        
+        .mood-btn { filter: grayscale(100%); cursor: pointer; transition: 0.2s; }
+        .mood-btn.active { filter: grayscale(0%); transform: scale(1.2); background: #fff1f2; border-radius: 15px; }
+        
+        .pill-btn { transition: all 0.2s; }
+        .pill-btn.active { background-color: #f43f5e; color: white; border-color: #f43f5e; }
+        
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(12px); }
+        .modal.active { display: flex; }
+        
+        .rating-badge { background: #f43f5e; color: white; padding: 6px 16px; border-radius: 99px; font-weight: 800; font-size: 1.5rem; }
+        .blood-color-btn { transition: all 0.2s; cursor: pointer; border: 3px solid transparent; }
+        .blood-color-btn.active { border-color: #f43f5e; transform: scale(1.15); box-shadow: 0 0 0 4px rgba(244, 63, 94, 0.2); }
+        
+        .cycle-bar { height: 8px; border-radius: 4px; background: #e2e8f0; position: relative; overflow: hidden; }
+        .cycle-progress { height: 100%; background: #f43f5e; width: 0%; transition: width 1s ease-in-out; }
+        .phase-indicator { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        .flip-card { perspective: 1000px; height: 180px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
+        .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 2rem; }
+        .flip-card-back { transform: rotateY(180deg); background: white; border: 1px solid #e2e8f0; padding: 20px; }
+
+        input[type="range"] { accent-color: #f43f5e; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .loading-spinner { border: 3px solid #f3f4f6; border-top: 3px solid #f43f5e; border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
 </head>
-<body>
-  <div class="wrap">
-    <header>
-      <div>
-        <h1>🌸 WELLISTA</h1>
-        <div class="small muted">Wellness for your cycle — demo (not medical advice)</div>
-      </div>
-      <nav id="topNav"></nav>
-    </header>
-
-    <main id="app"></main>
-
-    <footer>
-      <div>⚠️ This is not medical advice. For medical concerns, consult a certified healthcare professional.</div>
-      <div class="small muted" style="margin-top:8px">Built for learning & wellness tracking</div>
-    </footer>
-  </div>
-
-  <script>
-    // App state (in-memory only)
-    const state = {
-      page: 'home',
-      user: null,
-      cycleLogs: [],
-      moodLogs: [],
-      posts: [],
-      darkMode: false,
-      faqs: [
-        {q: 'Why do moods change during the cycle?', a: 'Hormone fluctuations affect neurotransmitters which influence mood. Small lifestyle changes like regular sleep, hydration, and gentle movement can help manage these changes.'},
-        {q: 'What is PMS?', a: 'PMS (premenstrual syndrome) includes physical and emotional symptoms like mood changes, bloating, and cramps that some people experience before their period.'},
-        {q: 'Can I use this to diagnose conditions?', a: 'No — this tool is for awareness and tracking only. Always consult a healthcare professional for medical advice and diagnosis.'}
-      ]
-    };
-
-    // Utilities
-    function capitalize(s){return s.charAt(0).toUpperCase()+s.slice(1)}
-    function escapeHtml(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-    
-    function isMedicalQuestion(text){
-      const flags = ['diagnos','should i','am i sick','pain that won','urgent','prescription','medicine for','hospital'];
-      const lower = text.toLowerCase();
-      return flags.some(k=>lower.includes(k));
-    }
-
-    // Navigation
-    const navEl = document.getElementById('topNav');
-    function renderNav(){
-      const logged = !!state.user;
-      let html = '';
-      if(!logged){
-        html = '<button onclick="go(\'home\')" class="btn-ghost btn-sm">Home</button><button onclick="go(\'login\')" class="btn-sm">Login / Sign up</button>';
-      } else {
-        const items = ['dashboard','tracker','wellness','food','qa','community','settings'];
-        html = items.map(i=>`<button onclick="go('${i}')" class="btn-ghost btn-sm">${capitalize(i)}</button>`).join('');
-        html += `<button onclick="toggleDarkMode()" class="btn-ghost btn-sm">🌙</button>`;
-        html += `<span class="pill">${escapeHtml(state.user.name)}</span>`;
-      }
-      navEl.innerHTML = html;
-    }
-
-    function go(page){
-      state.page = page;
-      render();
-      window.scrollTo({top:0,behavior:'smooth'});
-    }
-
-    function render(){
-      renderNav();
-      const p = state.page;
-      if(p==='home') renderHome();
-      else if(p==='login') renderLogin();
-      else if(p==='dashboard') renderDashboard();
-      else if(p==='tracker') renderTracker();
-      else if(p==='wellness') renderWellness();
-      else if(p==='food') renderFood();
-      else if(p==='qa') renderQA();
-      else if(p==='community') renderCommunity();
-      else if(p==='settings') renderSettings();
-      else renderHome();
-    }
-
-    // Dark mode
-    function toggleDarkMode(){
-      state.darkMode = !state.darkMode;
-      document.body.classList.toggle('dark', state.darkMode);
-    }
-
-    // Pages
-    function renderHome(){
-      app.innerHTML = `
-        <div class="card">
-          <h2>Welcome to Wellista 🌸</h2>
-          <p class="muted">Your personal cycle & wellness companion. Track periods, log moods, get wellness tips and nutritious food ideas.</p>
-
-          <div class="grid cols-3" style="margin-top:20px">
-            <div class="card">
-              <h3 style="font-size:18px">📅 Track Cycle</h3>
-              <p class="small muted">Log period dates & symptoms</p>
-              <button onclick="go('login')" style="margin-top:12px">Get Started</button>
-            </div>
-            <div class="card">
-              <h3 style="font-size:18px">💚 Wellness Tips</h3>
-              <p class="small muted">Sleep, hydration, movement</p>
-              <button onclick="go('wellness')" style="margin-top:12px">Learn More</button>
-            </div>
-            <div class="card">
-              <h3 style="font-size:18px">🥗 Food Ideas</h3>
-              <p class="small muted">Nourishing meals & snacks</p>
-              <button onclick="go('food')" style="margin-top:12px">Explore</button>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:20px">
-            <h3>Why track your cycle?</h3>
-            <p class="small muted">Understanding your cycle patterns can help you:</p>
-            <ul class="small muted" style="margin-top:8px;margin-left:20px">
-              <li>Predict when your period might start</li>
-              <li>Notice patterns in mood and energy levels</li>
-              <li>Plan activities around your cycle phases</li>
-              <li>Communicate better with healthcare providers</li>
-            </ul>
-            <p class="small muted" style="margin-top:12px"><strong>Important:</strong> This tool provides general information only and does not replace professional medical care.</p>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderLogin(){
-      app.innerHTML = `
-        <div class="card" style="max-width:600px;margin:0 auto">
-          <h2>Create Your Account</h2>
-          <p class="small muted">Get started with personalized cycle tracking</p>
-
-          <div style="margin-top:20px">
-            <label>Name *</label>
-            <input id="inp_name" type="text" placeholder="Your name" />
-          </div>
-
-          <div style="margin-top:12px">
-            <label>Age (optional)</label>
-            <input id="inp_age" type="number" min="8" max="100" placeholder="Your age" />
-          </div>
-
-          <div style="margin-top:12px">
-            <label>Food preferences (optional)</label>
-            <input id="inp_food" type="text" placeholder="e.g., vegetarian, no dairy" />
-          </div>
-
-          <div class="grid cols-2" style="margin-top:12px">
-            <div>
-              <label>Sleep hours (avg)</label>
-              <select id="inp_sleep">
-                <option value="">Select</option>
-                <option>Less than 6</option>
-                <option>6-8 hours</option>
-                <option>8+ hours</option>
-              </select>
-            </div>
-            <div>
-              <label>Activity level</label>
-              <select id="inp_activity">
-                <option value="">Select</option>
-                <option>Sedentary</option>
-                <option>Light</option>
-                <option>Moderate</option>
-                <option>Active</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="flex" style="margin-top:20px">
-            <button onclick="submitSignup()">Create Account</button>
-            <button class="btn-ghost" onclick="go('home')">Cancel</button>
-          </div>
-        </div>
-      `;
-    }
-
-    function submitSignup(){
-      const name = document.getElementById('inp_name').value.trim();
-      if(!name){alert('Please enter your name');return}
-      
-      state.user = {
-        name,
-        age: document.getElementById('inp_age').value,
-        food: document.getElementById('inp_food').value,
-        sleep: document.getElementById('inp_sleep').value,
-        activity: document.getElementById('inp_activity').value,
-        joined: Date.now()
-      };
-      go('dashboard');
-    }
-
-    function estimateNextPeriod(){
-      if(!state.cycleLogs.length) return {next:null,avg:null};
-      const starts = state.cycleLogs.filter(c=>c.type==='start').sort((a,b)=>new Date(a.date)-new Date(b.date));
-      
-      if(starts.length<2){
-        const d = new Date(starts[0]?.date);
-        d.setDate(d.getDate()+28);
-        return {next: starts.length ? d : null, avg:null};
-      }
-      
-      const diffs = [];
-      for(let i=1;i<starts.length;i++){
-        const a=new Date(starts[i-1].date), b=new Date(starts[i].date);
-        diffs.push((b-a)/(1000*60*60*24));
-      }
-      const avg = Math.round(diffs.reduce((s,x)=>s+x,0)/diffs.length);
-      const last = new Date(starts[starts.length-1].date);
-      last.setDate(last.getDate()+avg);
-      return {next:last, avg};
-    }
-
-    function renderDashboard(){
-      const est = estimateNextPeriod();
-      const recentMoods = state.moodLogs.slice(0,5);
-      
-      app.innerHTML = `
-        <div class="card">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px">
-            <div>
-              <h2>Hello, ${escapeHtml(state.user.name)}! 🌸</h2>
-              <div class="small muted">Member since ${new Date(state.user.joined).toLocaleDateString()}</div>
-            </div>
-            <div class="stat-box">
-              <div class="stat-label">Next Period</div>
-              <div class="stat-value" style="font-size:14px">${est.next ? est.next.toLocaleDateString() : 'Needs data'}</div>
-              <div class="small muted" style="margin-top:4px">Avg: ${est.avg ? est.avg+' days' : '—'}</div>
-            </div>
-          </div>
-
-          <div class="grid cols-2" style="margin-top:20px">
-            <div class="card">
-              <h3 style="font-size:16px">😊 How are you feeling today?</h3>
-              <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-                <button onclick="quickMood('Happy')" class="btn-sm">😊 Happy</button>
-                <button onclick="quickMood('Neutral')" class="btn-sm">😐 Neutral</button>
-                <button onclick="quickMood('Low')" class="btn-sm">😔 Low</button>
-                <button onclick="quickMood('Tired')" class="btn-sm">😴 Tired</button>
-                <button onclick="quickMood('Energetic')" class="btn-sm">⚡ Energetic</button>
-              </div>
-              ${recentMoods.length ? `<div style="margin-top:12px"><div class="small muted">Recent moods:</div>${recentMoods.map(m=>`<span class="pill" style="margin:4px">${m.mood}</span>`).join('')}</div>` : ''}
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">💡 Today's Wellness Tips</h3>
-              <ul class="small muted" style="margin-top:8px;margin-left:20px">
-                <li>Drink water throughout the day</li>
-                <li>Get 7-9 hours of sleep tonight</li>
-                <li>Take a 10-minute walk</li>
-                <li>Eat something nutritious</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="grid cols-3" style="margin-top:16px">
-            <div class="card">
-              <h4 style="font-size:14px">📊 Stats</h4>
-              <div class="small muted">Logs: ${state.cycleLogs.length}</div>
-              <div class="small muted">Moods: ${state.moodLogs.length}</div>
-              <button onclick="go('tracker')" class="btn-sm" style="margin-top:8px">Add Log</button>
-            </div>
-            <div class="card">
-              <h4 style="font-size:14px">🥗 Nutrition</h4>
-              <div class="small muted">Browse food ideas</div>
-              <button onclick="go('food')" class="btn-sm" style="margin-top:8px">View Foods</button>
-            </div>
-            <div class="card">
-              <h4 style="font-size:14px">💬 Community</h4>
-              <div class="small muted">Share & connect</div>
-              <button onclick="go('community')" class="btn-sm" style="margin-top:8px">Join</button>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function quickMood(mood){
-      state.moodLogs.unshift({mood, date: new Date().toISOString()});
-      if(state.moodLogs.length>100) state.moodLogs.pop();
-      alert(`Mood logged: ${mood} 💚`);
-      render();
-    }
-
-    function renderTracker(){
-      const list = state.cycleLogs.slice().reverse().slice(0,10).map(l=>
-        `<li style="padding:8px 0;border-bottom:1px solid rgba(0,0,0,0.05)">
-          <strong>${escapeHtml(l.type==='start'?'Period Start':'Period End')}</strong>: ${new Date(l.date).toLocaleDateString()}
-          ${l.symptoms && l.symptoms.length ? '<br><span class="small muted">Symptoms: '+escapeHtml(l.symptoms.join(', '))+'</span>' : ''}
-        </li>`
-      ).join('');
-
-      app.innerHTML = `
-        <div class="card">
-          <h2>Cycle Tracker 📅</h2>
-
-          <form onsubmit="event.preventDefault(); saveCycleLog();" style="margin-top:16px">
-            <div class="grid cols-2">
-              <div>
-                <label>Date *</label>
-                <input id="cycle_date" type="date" required max="${new Date().toISOString().split('T')[0]}" />
-              </div>
-              <div>
-                <label>Type *</label>
-                <select id="cycle_type">
-                  <option value="start">Period Start</option>
-                  <option value="end">Period End</option>
-                </select>
-              </div>
-            </div>
-
-            <div style="margin-top:12px">
-              <label>Symptoms (tap to select)</label>
-              <div id="symptomsRow" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
-                ${['Cramps','Headache','Fatigue','Bloating','Mood swings','Back pain','Anxiety','Nausea'].map(s=>
-                  `<button type="button" onclick="toggleSymptom(this,'${s}')" class="symptom-btn">${s}</button>`
-                ).join('')}
-              </div>
-              <input id="symptoms_input" type="hidden" value="[]" />
-            </div>
-
-            <div class="flex" style="margin-top:16px">
-              <button type="submit">Save Log</button>
-              <button type="button" class="btn-ghost" onclick="clearCycleForm()">Clear</button>
-              <button type="button" class="btn-ghost" onclick="exportCSV()">Export CSV</button>
-            </div>
-          </form>
-
-          ${renderCalendar()}
-
-          <div style="margin-top:20px">
-            <h3>Recent Logs</h3>
-            ${state.cycleLogs.length ? `<ul style="list-style:none">${list}</ul>` : '<p class="small muted">No logs yet. Start tracking above!</p>'}
-          </div>
-        </div>
-      `;
-    }
-
-    function renderCalendar(){
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const firstDay = new Date(year, month, 1);
-      const startWeekday = firstDay.getDay();
-      const daysInMonth = new Date(year, month+1, 0).getDate();
-      const today = now.getDate();
-
-      const periodDates = new Set();
-      state.cycleLogs.forEach(l => {
-        if(new Date(l.date).getMonth() === month && new Date(l.date).getFullYear() === year) {
-          periodDates.add(new Date(l.date).getDate());
-        }
-      });
-
-      let html = `<div style="margin-top:20px">
-        <h3>${firstDay.toLocaleDateString('en-US', {month:'long', year:'numeric'})}</h3>
-        <div class="calendar-header">
-          ${['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(d=>`<div>${d}</div>`).join('')}
-        </div>
-        <div class="calendar">`;
-
-      for(let i=0; i<startWeekday; i++){
-        html += `<div class="day" style="opacity:0.3"></div>`;
-      }
-
-      for(let i=1; i<=daysInMonth; i++){
-        const isPeriod = periodDates.has(i);
-        const isToday = i === today;
-        html += `<div class="day ${isPeriod?'period-day':''} ${isToday?'today':''}">${i}</div>`;
-      }
-
-      html += '</div></div>';
-      return html;
-    }
-
-    function toggleSymptom(btn, name){
-      btn.classList.toggle('active');
-      const active = Array.from(document.querySelectorAll('#symptomsRow .symptom-btn.active')).map(b=>b.textContent);
-      document.getElementById('symptoms_input').value = JSON.stringify(active);
-    }
-
-    function saveCycleLog(){
-      const d = document.getElementById('cycle_date').value;
-      const t = document.getElementById('cycle_type').value;
-      let symptoms = [];
-      try{ symptoms = JSON.parse(document.getElementById('symptoms_input').value || '[]') }catch(e){}
-      if(!d) return alert('Please select a date');
-      
-      state.cycleLogs.push({date: d, type: t, symptoms});
-      alert('Log saved! 📝');
-      render();
-    }
-
-    function clearCycleForm(){
-      document.getElementById('cycle_date').value='';
-      document.getElementById('symptoms_input').value='[]';
-      document.querySelectorAll('#symptomsRow .symptom-btn.active').forEach(b=>b.classList.remove('active'));
-    }
-
-    function exportCSV(){
-      if(!state.cycleLogs.length){
-        alert('No cycle data to export');
-        return;
-      }
-
-      let csv = 'Date,Type,Symptoms\n';
-      state.cycleLogs.forEach(c => {
-        const symptoms = c.symptoms ? c.symptoms.join('; ') : '';
-        csv += `${c.date},${c.type},"${symptoms}"\n`;
-      });
-
-      const blob = new Blob([csv], {type: 'text/csv'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'wellista-cycle-log.csv';
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-
-    function renderWellness(){
-      app.innerHTML = `
-        <div class="card">
-          <h2>Wellness Center 💚</h2>
-          <p class="muted">Evidence-based tips for managing your cycle</p>
-
-          <div class="grid cols-2" style="margin-top:20px">
-            <div class="card">
-              <h3 style="font-size:16px">💧 Hydration</h3>
-              <p class="small muted">Drink 8-10 glasses of water daily. Proper hydration can help reduce bloating and improve energy levels. Add lemon or cucumber for flavor.</p>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">😴 Sleep</h3>
-              <p class="small muted">Aim for 7-9 hours per night. Consistent sleep schedules help regulate hormones and improve mood. Avoid screens 1 hour before bed.</p>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">🚶 Movement</h3>
-              <p class="small muted">Gentle exercise like walking, yoga, or stretching can ease cramps and boost mood. Listen to your body and rest when needed.</p>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">🧘 Stress Management</h3>
-              <p class="small muted">Try deep breathing, meditation, or journaling. Stress can affect cycle regularity and symptom severity.</p>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">🌡️ Heat Therapy</h3>
-              <p class="small muted">Heating pads or warm baths can help relieve cramps and lower back pain. Use for 15-20 minutes at a time.</p>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">📝 Track Patterns</h3>
-              <p class="small muted">Notice how symptoms vary across your cycle. Understanding patterns helps you prepare and plan activities accordingly.</p>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:20px;background:#fff7ed">
-            <h3 style="font-size:16px">⚠️ When to See a Doctor</h3>
-            <ul class="small muted" style="margin-left:20px;margin-top:8px">
-              <li>Severe pain that interferes with daily activities</li>
-              <li>Very heavy bleeding (soaking through pads/tampons hourly)</li>
-              <li>Periods lasting longer than 7 days</li>
-              <li>Irregular cycles that suddenly change</li>
-              <li>Any concerns about your menstrual health</li>
-            </ul>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderFood(){
-      app.innerHTML = `
-        <div class="card">
-          <h2>Nourishing Foods 🥗</h2>
-          <p class="muted">Foods that may help support you through your cycle</p>
-
-          <div class="grid cols-2" style="margin-top:20px">
-            <div class="card">
-              <h3 style="font-size:16px">🥬 Iron-Rich Foods</h3>
-              <p class="small muted">Important during and after your period:</p>
-              <ul class="small" style="margin-left:20px;margin-top:8px">
-                <li>Leafy greens (spinach, kale)</li>
-                <li>Lentils and beans</li>
-                <li>Fortified cereals</li>
-                <li>Lean meats</li>
-              </ul>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">🥜 Magnesium Sources</h3>
-              <p class="small muted">May help with cramps and mood:</p>
-              <ul class="small" style="margin-left:20px;margin-top:8px">
-                <li>Bananas</li>
-                <li>Nuts and seeds</li>
-                <li>Dark chocolate (in moderation)</li>
-                <li>Dark chocolate (in moderation)</li>
-                <li>Avocados</li>
-              </ul>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">🐟 Omega-3 Fatty Acids</h3>
-              <p class="small muted">Anti-inflammatory benefits:</p>
-              <ul class="small" style="margin-left:20px;margin-top:8px">
-                <li>Fatty fish (salmon, sardines)</li>
-                <li>Walnuts</li>
-                <li>Chia seeds and flaxseeds</li>
-                <li>Algae-based supplements</li>
-              </ul>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">🍊 Vitamin C Foods</h3>
-              <p class="small muted">Helps iron absorption:</p>
-              <ul class="small" style="margin-left:20px;margin-top:8px">
-                <li>Citrus fruits</li>
-                <li>Bell peppers</li>
-                <li>Strawberries</li>
-                <li>Tomatoes</li>
-              </ul>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">🥛 Calcium-Rich Foods</h3>
-              <p class="small muted">May help reduce PMS symptoms:</p>
-              <ul class="small" style="margin-left:20px;margin-top:8px">
-                <li>Dairy or fortified plant milk</li>
-                <li>Yogurt</li>
-                <li>Tofu</li>
-                <li>Broccoli</li>
-              </ul>
-            </div>
-
-            <div class="card">
-              <h3 style="font-size:16px">🌾 Complex Carbs</h3>
-              <p class="small muted">Sustained energy and mood support:</p>
-              <ul class="small" style="margin-left:20px;margin-top:8px">
-                <li>Whole grain bread</li>
-                <li>Brown rice</li>
-                <li>Oatmeal</li>
-                <li>Quinoa</li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:20px">
-            <h3 style="font-size:16px">💡 Sample Meal Ideas</h3>
-            <div class="grid cols-2" style="margin-top:12px">
-              <div>
-                <strong class="small">Breakfast:</strong>
-                <p class="small muted">Oatmeal with banana, nuts, and a sprinkle of cinnamon</p>
-              </div>
-              <div>
-                <strong class="small">Lunch:</strong>
-                <p class="small muted">Spinach salad with chickpeas, bell peppers, and lemon dressing</p>
-              </div>
-              <div>
-                <strong class="small">Snack:</strong>
-                <p class="small muted">Dark chocolate square with a handful of almonds</p>
-              </div>
-              <div>
-                <strong class="small">Dinner:</strong>
-                <p class="small muted">Salmon with quinoa and steamed broccoli</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderQA(){
-      app.innerHTML = `
-        <div class="card">
-          <h2>Q&A Center 💬 ${state.aiReady ? '<span class="pill" style="font-size:11px">🤖 AI-Powered</span>' : ''}</h2>
-          <p class="muted">Ask questions about cycles & wellness - AI helps find the best answers!</p>
-
-          <div class="card" style="margin-top:16px">
-            <h3 style="font-size:16px">Ask a Question</h3>
-            <textarea id="qa_question" placeholder="Type your question here..." style="margin-top:8px"></textarea>
-            <button onclick="submitQuestion()" style="margin-top:12px">
-              ${state.aiReady ? '🤖 Get AI Answer' : 'Submit Question'}
-            </button>
-            <div id="qa_response" class="card hidden" style="margin-top:12px;background:#f0fdf4;border:1px solid #86efac">
-              <h4 style="font-size:14px">Response:</h4>
-              <p class="small" id="qa_answer"></p>
-              <div id="qa_related" class="hidden" style="margin-top:12px;padding-top:12px;border-top:1px solid #86efac">
-                <strong class="small">Related FAQs:</strong>
-                <div id="qa_related_list" style="margin-top:8px"></div>
-              </div>
-            </div>
-          </div>
-
-          <div style="margin-top:20px">
-            <h3>Frequently Asked Questions</h3>
-            ${state.faqs.map(faq=>`
-              <div class="card" style="margin-top:12px">
-                <h4 style="font-size:14px">${escapeHtml(faq.q)}</h4>
-                <p class="small muted" style="margin-top:8px">${escapeHtml(faq.a)}</p>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-    }
-
-    async function submitQuestion(){
-      const q = document.getElementById('qa_question').value.trim();
-      if(!q){alert('Please enter a question');return}
-      
-      const respDiv = document.getElementById('qa_response');
-      const answerP = document.getElementById('qa_answer');
-      const relatedDiv = document.getElementById('qa_related');
-      const relatedList = document.getElementById('qa_related_list');
-      
-      if(isMedicalQuestion(q)){
-        answerP.textContent = "⚠️ This appears to be a medical question. Please consult a certified healthcare professional for medical advice, diagnosis, or treatment. This tool provides general wellness information only.";
-        respDiv.classList.remove('hidden');
-        relatedDiv.classList.add('hidden');
-        return;
-      }
-
-      // Show loading state
-      answerP.textContent = state.aiReady ? "🤖 AI is analyzing your question..." : "Finding answer...";
-      respDiv.classList.remove('hidden');
-
-      let answer = "Thank you for your question! For personalized medical advice, please consult with a healthcare professional. You can also check our Wellness and Food sections for general tips.";
-      let relatedFAQs = [];
-
-      if(state.aiReady && state.aiModel){
-        try {
-          // Use AI to find the most relevant FAQ
-          const [questionEmbedding, faqEmbeddings] = await Promise.all([
-            state.aiModel.embed([q]),
-            state.aiModel.embed(state.faqs.map(f => f.q))
-          ]);
-
-          const questionVec = await questionEmbedding.array();
-          const faqVecs = await faqEmbeddings.array();
-
-          // Calculate cosine similarity
-          const similarities = faqVecs.map((faqVec, idx) => {
-            const similarity = cosineSimilarity(questionVec[0], faqVec);
-            return { idx, similarity, faq: state.faqs[idx] };
-          });
-
-          // Sort by similarity
-          similarities.sort((a, b) => b.similarity - a.similarity);
-
-          // Get top match if similarity is high enough
-          if(similarities[0].similarity > 0.5){
-            answer = `Based on your question, here's what I found:\n\n${similarities[0].faq.a}`;
-            
-            // Get related FAQs (top 3, excluding the best match)
-            relatedFAQs = similarities.slice(1, 4).filter(s => s.similarity > 0.3);
-          } else {
-            // Check symptom knowledge base
-            const symptomMatch = findSymptomMatch(q);
-            if(symptomMatch){
-              answer = `Here are some tips for ${symptomMatch.symptom}:\n\n${symptomMatch.tips}`;
-            }
-          }
-
-          // Cleanup tensors
-          questionEmbedding.dispose();
-          faqEmbeddings.dispose();
-
-        } catch(error){
-          console.error('AI processing error:', error);
-          answer = getFallbackAnswer(q);
-        }
-      } else {
-        answer = getFallbackAnswer(q);
-      }
-
-      answerP.textContent = answer;
-
-      // Show related FAQs if any
-      if(relatedFAQs.length > 0){
-        relatedList.innerHTML = relatedFAQs.map(r => 
-          `<div style="margin-top:6px;padding:8px;background:white;border-radius:6px">
-            <strong class="small">${escapeHtml(r.faq.q)}</strong>
-            <p class="small muted" style="margin-top:4px">${escapeHtml(r.faq.a)}</p>
-          </div>`
-        ).join('');
-        relatedDiv.classList.remove('hidden');
-      } else {
-        relatedDiv.classList.add('hidden');
-      }
-    }
-
-    function cosineSimilarity(vecA, vecB) {
-      let dotProduct = 0;
-      let normA = 0;
-      let normB = 0;
-      
-      for(let i = 0; i < vecA.length; i++){
-        dotProduct += vecA[i] * vecB[i];
-        normA += vecA[i] * vecA[i];
-        normB += vecB[i] * vecB[i];
-      }
-      
-      return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
-    }
-
-    function findSymptomMatch(question){
-      const lower = question.toLowerCase();
-      return state.symptomKnowledge.find(s => lower.includes(s.symptom));
-    }
-
-    function getFallbackAnswer(q){
-      // Simple keyword-based responses
-      const lower = q.toLowerCase();
-      let answer = "Thank you for your question! For personalized medical advice, please consult with a healthcare professional. You can also check our Wellness and Food sections for general tips.";
-      
-      if(lower.includes('cramp')){
-        answer = "Cramps are common during menstruation. Try heat therapy, gentle movement, staying hydrated, and eating magnesium-rich foods. If cramps are severe or interfere with daily activities, consult a doctor.";
-      } else if(lower.includes('mood') || lower.includes('emotion')){
-        answer = "Hormone fluctuations during the cycle can affect mood and emotions. Regular sleep, balanced nutrition, exercise, and stress management techniques may help. Track your patterns to better understand your cycle.";
-      } else if(lower.includes('irregular') || lower.includes('late')){
-        answer = "Cycle irregularity can be caused by stress, changes in weight, exercise, or other factors. If you experience sudden changes or consistently irregular cycles, it's best to consult a healthcare provider.";
-      } else if(lower.includes('food') || lower.includes('eat')){
-        answer = "Focus on iron-rich foods, whole grains, fruits, vegetables, and adequate hydration. Check our Food section for specific suggestions. Everyone's needs are different, so consider consulting a nutritionist.";
-      }
-
-      return answer;
-    }
-
-    function renderCommunity(){
-      app.innerHTML = `
-        <div class="card">
-          <h2>Community 💬</h2>
-          <p class="muted">Share experiences and support each other (demo only)</p>
-
-          <div class="card" style="margin-top:16px">
-            <h3 style="font-size:16px">Share Your Story</h3>
-            <textarea id="post_content" placeholder="Share your experience, tip, or thought..." style="margin-top:8px"></textarea>
-            <div class="flex" style="margin-top:12px">
-              <button onclick="submitPost()">Post</button>
-              <label style="display:flex;align-items:center;gap:6px">
-                <input type="checkbox" id="post_anon" />
-                <span class="small">Post anonymously</span>
-              </label>
-            </div>
-          </div>
-
-          <div style="margin-top:20px">
-            <h3>Community Posts</h3>
-            ${state.posts.length ? state.posts.map(p=>`
-              <div class="post">
-                <div style="display:flex;justify-content:space-between;align-items:start">
-                  <strong class="small">${escapeHtml(p.author)}</strong>
-                  <span class="small muted">${new Date(p.date).toLocaleString()}</span>
+<body class="min-h-screen pb-24">
+
+    <div id="auth-page" class="fixed inset-0 z-[3000] bg-white flex items-center justify-center p-6 overflow-y-auto">
+        <div class="max-w-md w-full space-y-6 py-10">
+            <div class="text-center">
+                <div class="w-16 h-16 hero-gradient rounded-2xl flex items-center justify-center shadow-xl mx-auto mb-4">
+                    <i data-lucide="sparkles" class="text-white w-10 h-10"></i>
                 </div>
-                <p class="small" style="margin-top:8px">${escapeHtml(p.content)}</p>
-              </div>
-            `).join('') : '<p class="small muted">No posts yet. Be the first to share!</p>'}
-          </div>
+                <h1 class="text-3xl font-black text-slate-900">Wellista PRO</h1>
+                <p class="text-slate-500 text-sm">Personalized Bio-Tracking</p>
+            </div>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] font-black uppercase text-slate-400">Language</label>
+                    <select id="ob-lang" class="w-full p-4 rounded-xl bg-slate-50 border outline-none font-bold text-rose-600">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                        <option value="pa">ਪੰਜਾਬੀ (Punjabi)</option>
+                        <option value="mr">मराठी (Marathi)</option>
+                        <option value="bn">বাংলা (Bengali)</option>
+                    </select>
+                </div>
 
-          <div class="card" style="margin-top:20px;background:#fef3c7">
-            <h4 style="font-size:14px">⚠️ Community Guidelines</h4>
-            <ul class="small muted" style="margin-left:20px;margin-top:8px">
-              <li>Be kind and supportive</li>
-              <li>Respect privacy — don't share personal medical details</li>
-              <li>This is not a substitute for medical advice</li>
-              <li>Report any concerning content</li>
-            </ul>
-          </div>
+                <input type="text" id="ob-name" placeholder="Full Name" class="w-full p-4 rounded-xl bg-slate-100 outline-none font-bold">
+                
+                <div class="space-y-2">
+                    <label class="text-[10px] font-black text-slate-400 uppercase">Medical Bio</label>
+                    <div class="flex flex-wrap gap-2" id="ob-conditions">
+                        <button type="button" onclick="toggleCondition(this)" class="pill-btn px-4 py-2 border rounded-full text-xs font-bold">PCOS</button>
+                        <button type="button" onclick="toggleCondition(this)" class="pill-btn px-4 py-2 border rounded-full text-xs font-bold">Thyroid</button>
+                        <button type="button" onclick="toggleCondition(this)" class="pill-btn px-4 py-2 border rounded-full text-xs font-bold">Anemia</button>
+                        <button type="button" onclick="toggleCondition(this)" class="pill-btn px-4 py-2 border rounded-full text-xs font-bold">Diabetes</button>
+                    </div>
+                </div>
+
+                <input type="text" id="ob-meds" placeholder="Medicines (e.g. Iron, Metformin)" class="w-full p-4 rounded-xl bg-slate-50 border outline-none text-sm">
+                
+                <div class="space-y-1">
+                    <label class="text-[10px] font-black text-slate-400 uppercase">Last Period Start Date</label>
+                    <input type="date" id="ob-cycle" class="w-full p-4 rounded-xl bg-slate-50 border outline-none text-sm font-bold">
+                </div>
+
+                <button onclick="login()" class="w-full bg-rose-500 text-white py-4 rounded-2xl font-black shadow-xl hover:bg-rose-600 transition">Start Journey ✨</button>
+            </div>
         </div>
-      `;
-    }
+    </div>
 
-    function submitPost(){
-      const content = document.getElementById('post_content').value.trim();
-      if(!content){alert('Please enter some content');return}
-      if(content.length > 500){alert('Please keep posts under 500 characters');return}
-      
-      const anon = document.getElementById('post_anon').checked;
-      state.posts.unshift({
-        author: anon ? 'Anonymous' : state.user.name,
-        content,
-        date: new Date().toISOString()
-      });
-      if(state.posts.length > 50) state.posts.pop();
-      
-      alert('Posted! 💚');
-      render();
-    }
-
-    function renderSettings(){
-      app.innerHTML = `
-        <div class="card" style="max-width:600px;margin:0 auto">
-          <h2>Settings ⚙️</h2>
-
-          <div style="margin-top:20px">
-            <h3 style="font-size:16px">Your Profile</h3>
-            <div style="margin-top:12px">
-              <label>Name</label>
-              <input id="set_name" type="text" value="${escapeHtml(state.user.name)}" />
+    <div id="app-content" class="hidden">
+        <header class="sticky top-0 z-[1000] bg-white/90 backdrop-blur-md border-b border-slate-100 p-4">
+            <div class="max-w-xl mx-auto flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-9 h-9 hero-gradient rounded-xl flex items-center justify-center shadow-lg">
+                        <i data-lucide="heart" class="text-white w-5 h-5"></i>
+                    </div>
+                    <span class="font-extrabold text-xl tracking-tight text-slate-900">Wellista</span>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="openSettings()" class="text-slate-400 p-2 hover:text-slate-600 transition">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </button>
+                    <button onclick="logout()" class="text-rose-500 p-2 bg-rose-50 rounded-xl hover:bg-rose-100 transition">
+                        <i data-lucide="log-out" class="w-5 h-5"></i>
+                    </button>
+                </div>
             </div>
-            <div style="margin-top:12px">
-              <label>Age</label>
-              <input id="set_age" type="number" value="${escapeHtml(state.user.age||'')}" />
-            </div>
-            <div style="margin-top:12px">
-              <label>Food preferences</label>
-              <input id="set_food" type="text" value="${escapeHtml(state.user.food||'')}" />
-            </div>
-            <button onclick="saveSettings()" style="margin-top:12px">Save Changes</button>
-          </div>
+            <nav class="flex justify-around mt-4 max-w-xl mx-auto overflow-x-auto gap-2 no-scrollbar">
+                <button onclick="showTab('dashboard')" class="nav-link active py-2 px-3 flex flex-col items-center flex-shrink-0" data-tab="dashboard">
+                    <i data-lucide="layout-grid"></i>
+                    <span class="text-[9px] font-black uppercase mt-1 lang-key" data-key="nav_home">Home</span>
+                </button>
+                <button onclick="showTab('meals')" class="nav-link py-2 px-3 flex flex-col items-center flex-shrink-0" data-tab="meals">
+                    <i data-lucide="utensils"></i>
+                    <span class="text-[9px] font-black uppercase mt-1 lang-key" data-key="nav_meals">Meals</span>
+                </button>
+                <button onclick="showTab('todo')" class="nav-link py-2 px-3 flex flex-col items-center flex-shrink-0" data-tab="todo">
+                    <i data-lucide="check-square"></i>
+                    <span class="text-[9px] font-black uppercase mt-1 lang-key" data-key="nav_todo">To-Do</span>
+                </button>
+                <button onclick="showTab('vent')" class="nav-link py-2 px-3 flex flex-col items-center flex-shrink-0" data-tab="vent">
+                    <i data-lucide="message-circle"></i>
+                    <span class="text-[9px] font-black uppercase mt-1 lang-key" data-key="nav_vent">Sister AI</span>
+                </button>
+                <button onclick="showTab('tracker')" class="nav-link py-2 px-3 flex flex-col items-center flex-shrink-0" data-tab="tracker">
+                    <i data-lucide="calendar"></i>
+                    <span class="text-[9px] font-black uppercase mt-1 lang-key" data-key="nav_log">Log</span>
+                </button>
+            </nav>
+        </header>
 
-          <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06)">
-            <h3 style="font-size:16px">Data & Privacy</h3>
-            <p class="small muted" style="margin-top:8px">Your data is stored locally in this session only. No data is sent to external servers. All data will be cleared when you close this page.</p>
-            <button onclick="clearAllData()" class="btn-ghost" style="margin-top:12px;color:#dc2626">Clear All Data</button>
-          </div>
+        <main class="max-w-xl mx-auto p-4 space-y-8">
+            
+            <div id="tab-dashboard" class="tab-content active space-y-6">
+                <div class="hero-gradient rounded-[2.5rem] p-8 text-white shadow-2xl relative overflow-hidden">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h2 class="text-lg font-bold opacity-80">
+                                <span class="lang-key" data-key="greeting">Namaste</span>, <span id="user-display-name">Sister</span>!
+                            </h2>
+                            <p class="text-5xl font-black mt-1 tracking-tighter" id="day-counter">Day --</p>
+                        </div>
+                        <div class="bg-white/20 backdrop-blur-md rounded-2xl p-3 text-center min-w-[70px]">
+                            <p class="text-[10px] font-black uppercase">Streak</p>
+                            <p class="text-xl font-black">🔥 3</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 space-y-2">
+                        <div class="flex justify-between items-end">
+                            <span id="cycle-phase-name" class="phase-indicator">Loading Phase...</span>
+                            <span class="text-[10px] font-bold opacity-70">Cycle Progress</span>
+                        </div>
+                        <div class="cycle-bar">
+                            <div id="cycle-graph-fill" class="cycle-progress"></div>
+                        </div>
+                        <div class="flex justify-between text-[8px] font-black opacity-60 uppercase">
+                            <span>Day 1</span>
+                            <span>Ovulation</span>
+                            <span>Day 28</span>
+                        </div>
+                    </div>
+                </div>
 
-          <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(0,0,0,0.06)">
-            <h3 style="font-size:16px">About Wellista</h3>
-            <p class="small muted" style="margin-top:8px">Wellista is a demo wellness tracking tool for educational purposes. It does not provide medical advice and should not replace consultation with healthcare professionals.</p>
-            <button onclick="logout()" class="btn-ghost" style="margin-top:12px">Logout</button>
-          </div>
+                <div id="flip-container" class="flip-card">
+                    <div class="flip-card-inner" id="condition-card-inner">
+                        <div class="flip-card-front bg-white border-l-4 border-rose-500 p-6 shadow-sm flex items-start space-x-4">
+                            <div class="bg-rose-50 p-3 rounded-2xl text-rose-500">
+                                <i data-lucide="sparkles" class="w-6 h-6"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex justify-between items-start">
+                                    <p class="text-[10px] font-black text-rose-500 uppercase">Sisterly Insight</p>
+                                    <button onclick="flipCard()" class="text-[9px] bg-slate-100 px-2 py-1 rounded-lg font-bold text-slate-500 uppercase">Flip <i data-lucide="refresh-cw" class="w-3 h-3 inline"></i></button>
+                                </div>
+                                <p id="bio-insight-text" class="text-sm font-bold text-slate-700 leading-snug mt-1">
+                                    Analyzing your cycle...
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flip-card-back shadow-sm">
+                            <div class="flex justify-between items-center mb-3">
+                                <p class="text-[10px] font-black text-slate-400 uppercase">Focus Settings</p>
+                                <button onclick="flipCard()" class="text-[9px] bg-slate-900 px-2 py-1 rounded-lg font-bold text-white uppercase">Back</button>
+                            </div>
+                            <p class="text-xs font-bold mb-3 text-slate-600">Active Focus Condition:</p>
+                            <div class="flex flex-wrap gap-2" id="flip-cond-toggles"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-6 rounded-[2rem] border shadow-sm text-center">
+                        <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="droplet"></i>
+                        </div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase lang-key" data-key="water">Water</p>
+                        <p class="text-2xl font-black mt-1" id="water-display">0.0L</p>
+                        <button onclick="addWater()" class="mt-4 w-full bg-blue-500 text-white py-3 rounded-2xl text-[10px] font-black uppercase shadow-lg shadow-blue-100">+ 250ML</button>
+                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] border shadow-sm text-center">
+                        <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                            <i data-lucide="activity"></i>
+                        </div>
+                        <p class="text-[9px] font-black text-slate-400 uppercase">Active Phase</p>
+                        <p class="text-xs font-bold mt-2 h-8 flex items-center justify-center text-rose-500" id="dash-bio">Follicular</p>
+                        <div class="mt-3 flex justify-center space-x-1">
+                            <div class="w-2 h-2 rounded-full bg-rose-500"></div>
+                            <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+                            <div class="w-2 h-2 rounded-full bg-slate-200"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-meals" class="tab-content space-y-8">
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-black px-2 flex items-center gap-2">
+                        <i data-lucide="book-open" class="text-rose-500"></i> Sisterhood Classics
+                    </h3>
+
+                    <section class="space-y-3">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Morning Fuel</p>
+                        <div class="grid gap-3">
+                            <div onclick="openRecipe('Moong Dal Chilla', 'Protein-packed savory pancakes. Soak 1 cup moong dal for 3h, grind with ginger & green chili. Spread on tawa. High protein, Low GI - Perfect for PCOS.')" class="bg-white p-4 rounded-3xl border shadow-sm flex items-center gap-4 cursor-pointer active:scale-95 transition">
+                                <div class="w-12 h-12 bg-emerald-50 text-emerald-500 rounded-2xl flex items-center justify-center"><i data-lucide="leaf"></i></div>
+                                <div><p class="font-bold">Moong Dal Chilla</p><p class="text-[10px] font-bold text-slate-400">PCOS • High Protein</p></div>
+                            </div>
+                            <div onclick="openRecipe('Ragi Porridge', 'Iron & Calcium powerhouse. Mix 2 tbsp Ragi flour in water/milk, cook until thick, add jaggery. Helps with Anemia and Bone Strength.')" class="bg-white p-4 rounded-3xl border shadow-sm flex items-center gap-4 cursor-pointer active:scale-95 transition">
+                                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center"><i data-lucide="wheat"></i></div>
+                                <div><p class="font-bold">Sweet Ragi Malt</p><p class="text-[10px] font-bold text-slate-400">Anemia • Bone Health</p></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="space-y-3">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Nourishing Mains</p>
+                        <div class="grid gap-3">
+                            <div onclick="openRecipe('Bajra & Veggie Khichdi', 'Millet magic. Replace rice with Pearl Millet (Bajra). Cook with moong dal and seasonal veggies. Stabilizes blood sugar for Diabetes.')" class="bg-white p-4 rounded-3xl border shadow-sm flex items-center gap-4 cursor-pointer active:scale-95 transition">
+                                <div class="w-12 h-12 bg-orange-50 text-orange-500 rounded-2xl flex items-center justify-center"><i data-lucide="sun"></i></div>
+                                <div><p class="font-bold">Bajra Khichdi</p><p class="text-[10px] font-bold text-slate-400">Diabetes • Slow Carbs</p></div>
+                            </div>
+                            <div onclick="openRecipe('Paneer Methi Bhurji', 'Thyroid support. Sauté crumbled paneer with fresh fenugreek leaves (Methi), turmeric, and onions. High protein, hormone friendly.')" class="bg-white p-4 rounded-3xl border shadow-sm flex items-center gap-4 cursor-pointer active:scale-95 transition">
+                                <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center"><i data-lucide="zap"></i></div>
+                                <div><p class="font-bold">Paneer Methi Bhurji</p><p class="text-[10px] font-bold text-slate-400">Thyroid • Protein Rich</p></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="space-y-3 pb-4 border-b">
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest px-2">Sisterly Sips</p>
+                        <div class="grid gap-3">
+                            <div onclick="openRecipe('Spearmint Tea', 'Steep dried spearmint leaves for 5 mins. Drinking this daily helps reduce hirsutism and balances hormones in PCOS.')" class="bg-white p-4 rounded-3xl border shadow-sm flex items-center gap-4 cursor-pointer active:scale-95 transition">
+                                <div class="w-12 h-12 bg-rose-50 text-rose-500 rounded-2xl flex items-center justify-center"><i data-lucide="coffee"></i></div>
+                                <div><p class="font-bold">Spearmint Bliss</p><p class="text-[10px] font-bold text-slate-400">PCOS • Skin Health</p></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white shadow-2xl">
+                    <h3 class="text-2xl font-black flex items-center mb-1">
+                        <i data-lucide="wand-2" class="text-rose-400 mr-2"></i> AI Bio-Chef
+                    </h3>
+                    <p class="text-slate-400 text-xs mb-8 font-medium lang-key" data-key="chef_sub">Judge ingredients & get recipes.</p>
+                    <textarea id="ai-chef-input" placeholder="E.g., I have paneer, spinach, and tomatoes..." class="w-full bg-white/5 border border-white/10 rounded-2xl p-5 text-sm outline-none h-32 focus:ring-2 focus:ring-rose-500"></textarea>
+                    <button onclick="askAI('judge')" class="w-full bg-rose-500 py-5 rounded-[2rem] font-black text-lg mt-4 shadow-xl hover:bg-rose-600 transition lang-key" data-key="btn_judge">Analyze & Cook</button>
+                </div>
+            </div>
+
+            <div id="tab-todo" class="tab-content space-y-6">
+                <div class="bg-white p-8 rounded-[2.5rem] border shadow-xl">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-2xl font-black text-slate-900">Daily Tasks</h2>
+                        <button onclick="suggestTodo()" class="text-[10px] bg-rose-50 text-rose-500 px-3 py-2 rounded-xl font-black uppercase flex items-center">
+                            <i data-lucide="sparkles" class="w-3 h-3 mr-1"></i> AI Suggest
+                        </button>
+                    </div>
+                    
+                    <div class="flex gap-2 mb-6">
+                        <input type="text" id="todo-manual-input" placeholder="Add a custom task..." class="flex-1 bg-slate-50 border-none rounded-xl px-4 py-3 text-sm outline-none">
+                        <button onclick="addManualTodo()" class="bg-slate-900 text-white px-4 rounded-xl"><i data-lucide="plus"></i></button>
+                    </div>
+
+                    <div class="space-y-3" id="todo-list-container"></div>
+                </div>
+            </div>
+
+            <div id="tab-vent" class="tab-content space-y-4">
+                <div class="bg-white rounded-[2.5rem] border shadow-2xl overflow-hidden flex flex-col min-h-[550px]">
+                    <div class="p-6 bg-rose-50 border-b border-rose-100 flex justify-between items-center">
+                        <div>
+                            <span class="block font-black text-rose-600 text-sm uppercase tracking-widest">Sister AI Vent Zone</span>
+                            <span class="text-[10px] text-rose-400 font-bold uppercase">Private Conversation</span>
+                        </div>
+                        <i data-lucide="message-circle" class="text-rose-300 w-6 h-6"></i>
+                    </div>
+                    <div id="vent-chat-box" class="flex-1 overflow-y-auto p-6 space-y-4 text-sm bg-slate-50/30 max-h-[400px] no-scrollbar">
+                        <div class="bg-white p-5 rounded-3xl rounded-tl-none max-w-[85%] text-slate-600 shadow-sm border font-medium">
+                            Hey Sister. I'm here to listen. This is our private space. Tell me what's on your mind. 🕊️
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white border-t mt-auto flex space-x-2">
+                        <input type="text" id="vent-input" placeholder="Vent anonymously..." class="flex-1 bg-slate-100 border-none rounded-2xl px-6 py-4 text-sm outline-none" onkeypress="if(event.key==='Enter') sendVent()">
+                        <button onclick="sendVent()" class="bg-rose-500 text-white p-4 rounded-2xl shadow-lg hover:bg-rose-600 transition">
+                            <i data-lucide="send" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-tracker" class="tab-content space-y-8">
+                <div class="bg-white p-8 rounded-[3rem] border shadow-xl text-center">
+                    <h2 class="text-3xl font-black mb-10 lang-key" data-key="nav_log">Daily Log</h2>
+                    <div class="flex justify-around mb-10">
+                        <span onclick="setMood('😭', this)" class="mood-btn text-4xl p-3">😭</span>
+                        <span onclick="setMood('😐', this)" class="mood-btn text-4xl p-3">😐</span>
+                        <span onclick="setMood('😊', this)" class="mood-btn text-4xl p-3 active">😊</span>
+                    </div>
+                    <div class="text-left space-y-6 mb-8">
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 mb-2 uppercase">Cramps (0-10)</p>
+                            <input type="range" id="log-cramps" min="0" max="10" value="0" class="w-full">
+                            <p class="text-center text-sm font-bold mt-2" id="cramps-display">0</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-slate-400 mb-3 uppercase">Flow Color</p>
+                            <div class="flex justify-between">
+                                <button onclick="setFlowColor('Bright Red', this)" class="blood-color-btn w-10 h-10 rounded-full bg-[#E63946] shadow-md"></button>
+                                <button onclick="setFlowColor('Dark Red', this)" class="blood-color-btn w-10 h-10 rounded-full bg-[#880808] shadow-md"></button>
+                                <button onclick="setFlowColor('Brown', this)" class="blood-color-btn w-10 h-10 rounded-full bg-[#660000] shadow-md"></button>
+                                <button onclick="setFlowColor('None', this)" class="blood-color-btn w-10 h-10 rounded-full bg-slate-200 shadow-md"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <textarea id="log-meal-input" placeholder="What did you eat today?" class="w-full p-5 rounded-2xl bg-slate-50 border-none outline-none text-sm h-32 mb-6"></textarea>
+                    <button onclick="askAI('log')" class="w-full bg-slate-900 text-white py-5 rounded-[2rem] font-black text-lg hover:bg-slate-800 transition">Judge & Rate my Day</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div id="recipe-modal" class="modal">
+        <div class="bg-white w-full max-w-md rounded-[3rem] p-10 shadow-2xl">
+            <h2 id="recipe-modal-title" class="text-3xl font-black mb-4 text-slate-900">Recipe</h2>
+            <p id="recipe-modal-body" class="text-slate-600 leading-relaxed text-sm"></p>
+            <button onclick="closeModal('recipe-modal')" class="w-full bg-rose-500 text-white py-5 rounded-[2rem] font-black mt-10">Got it, Sister!</button>
         </div>
-      `;
-    }
+    </div>
 
-    function saveSettings(){
-      state.user.name = document.getElementById('set_name').value.trim() || state.user.name;
-      state.user.age = document.getElementById('set_age').value;
-      state.user.food = document.getElementById('set_food').value;
-      alert('Settings saved! ✓');
-      render();
-    }
+    <div id="ai-modal" class="modal">
+        <div class="bg-white w-full max-w-lg rounded-[3rem] p-10 shadow-2xl overflow-y-auto max-h-[85vh]">
+            <div class="flex justify-between items-center mb-8 border-b pb-4">
+                <h2 class="text-3xl font-black text-slate-900">Verdict</h2>
+                <div class="rating-badge" id="modal-rating">--/10</div>
+            </div>
+            <div id="modal-body" class="text-sm leading-relaxed text-slate-600 font-medium whitespace-pre-wrap">
+                <div class="flex justify-center"><div class="loading-spinner"></div></div>
+            </div>
+            <button onclick="closeModal('ai-modal')" class="w-full bg-slate-900 text-white py-5 rounded-[2.5rem] font-black mt-10 hover:bg-slate-800 transition">Understood</button>
+        </div>
+    </div>
 
-    function clearAllData(){
-      if(!confirm('Are you sure? This will delete all your logs and data.')) return;
-      state.cycleLogs = [];
-      state.moodLogs = [];
-      state.posts = [];
-      alert('All data cleared');
-      render();
-    }
+    <div id="settings-modal" class="modal">
+        <div class="bg-white w-full max-w-lg rounded-[3rem] p-10 shadow-2xl overflow-y-auto max-h-[85vh]">
+            <h2 class="text-3xl font-black mb-8 text-slate-900">Settings</h2>
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] font-black text-slate-400 uppercase mb-2 block">OpenAI API Key</label>
+                    <input type="password" id="settings-api-key" placeholder="sk-..." class="w-full p-4 rounded-xl bg-slate-50 border outline-none text-sm">
+                    <p class="text-xs text-slate-500 mt-2">Required for AI features. Stored locally.</p>
+                </div>
+                <button onclick="saveSettings()" class="w-full bg-rose-500 text-white py-4 rounded-2xl font-black hover:bg-rose-600 transition">Save Settings</button>
+            </div>
+            <button onclick="closeModal('settings-modal')" class="w-full bg-slate-200 text-slate-700 py-4 rounded-2xl font-black mt-4 hover:bg-slate-300 transition">Close</button>
+        </div>
+    </div>
 
-    function logout(){
-      if(!confirm('Are you sure you want to logout? All data will be lost.')) return;
-      state.user = null;
-      state.cycleLogs = [];
-      state.moodLogs = [];
-      state.posts = [];
-      go('home');
-    }
+    <script>
+        const i18n = {
+            en: { nav_home: "Home", nav_meals: "Meals", nav_todo: "To-Do", nav_vent: "Sister AI", nav_log: "Log", greeting: "Namaste", water: "Water" },
+            hi: { nav_home: "होम", nav_meals: "भोजन", nav_todo: "सूची", nav_vent: "बहन AI", nav_log: "लॉग", greeting: "नमस्ते", water: "पानी" }
+        };
 
-    // Init
-    render();
-  </script>
+        let bio = null;
+        let waterVal = 0;
+        let activeMood = "😊";
+        let activeBlood = "None";
+        let activeFocus = null;
+
+        const conditionTips = {
+            PCOS: "Prioritize low-GI carbs and spearmint tea for hormone balance.",
+            Anemia: "Pair iron-rich foods with Vitamin C for better absorption.",
+            Thyroid: "Focus on iodine and selenium-rich foods today.",
+            Diabetes: "Maintain steady blood sugar with fiber-first eating."
+        };
+
+        function toggleCondition(btn) { btn.classList.toggle('active'); }
+
+        function flipCard() {
+            document.getElementById('flip-container').classList.toggle('flipped');
+        }
+
+        function openRecipe(title, body) {
+            document.getElementById('recipe-modal-title').innerText = title;
+            document.getElementById('recipe-modal-body').innerText = body;
+            document.getElementById('recipe-modal').classList.add('active');
+        }
+
+        function login() {
+            const name = document.getElementById('ob-name').value.trim();
+            const lang = document.getElementById('ob-lang').value;
+            const cycleDate = document.getElementById('ob-cycle').value;
+            const conds = Array.from(document.querySelectorAll('#ob-conditions .active')).map(b => b.innerText);
+            
+            if(!name || !cycleDate) { alert("Please enter name and date!"); return; }
+            
+            bio = { name, lang, conditions: conds, meds: document.getElementById('ob-meds').value.trim(), cycle: cycleDate };
+            localStorage.setItem('wellista_user', JSON.stringify(bio));
+            initApp();
+        }
+
+        function initApp() {
+            const saved = localStorage.getItem('wellista_user');
+            if(!saved) return;
+            bio = JSON.parse(saved);
+            
+            document.getElementById('auth-page').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+            document.getElementById('user-display-name').innerText = bio.name.split(' ')[0];
+            
+            const backContainer = document.getElementById('flip-cond-toggles');
+            backContainer.innerHTML = '';
+            bio.conditions.forEach(c => {
+                backContainer.innerHTML += `<button onclick="setFocus('${c}')" class="focus-pill px-4 py-2 border rounded-full text-[10px] font-bold ${activeFocus === c ? 'bg-rose-500 text-white' : ''}">${c}</button>`;
+            });
+            if(bio.conditions.length > 0) setFocus(bio.conditions[0]);
+
+            updateCycleDay();
+            applyLanguage();
+            lucide.createIcons();
+            
+            document.getElementById('log-cramps').addEventListener('input', (e) => {
+                document.getElementById('cramps-display').innerText = e.target.value;
+            });
+
+            addManualTodo("Drink 2L of water today");
+        }
+
+        function setFocus(cond) {
+            activeFocus = cond;
+            document.querySelectorAll('.focus-pill').forEach(p => {
+                p.classList.toggle('bg-rose-500', p.innerText === cond);
+                p.classList.toggle('text-white', p.innerText === cond);
+            });
+            document.getElementById('bio-insight-text').innerText = conditionTips[cond] || "Stay consistent with your routine!";
+        }
+
+        function updateCycleDay() {
+            const lastDate = new Date(bio.cycle);
+            const today = new Date();
+            const diffDays = Math.ceil(Math.abs(today - lastDate) / (1000 * 60 * 60 * 24)); 
+            const currentDay = (diffDays % 28) || 1;
+            document.getElementById('day-counter').innerText = `Day ${currentDay}`;
+            document.getElementById('cycle-graph-fill').style.width = ((currentDay / 28) * 100) + "%";
+            
+            let phase = currentDay <= 5 ? "Menstrual" : currentDay <= 13 ? "Follicular" : currentDay <= 16 ? "Ovulatory" : "Luteal";
+            document.getElementById('cycle-phase-name').innerText = phase + " Phase";
+            document.getElementById('dash-bio').innerText = phase;
+        }
+
+        function applyLanguage() {
+            const trans = i18n[bio.lang] || i18n.en;
+            document.querySelectorAll('.lang-key').forEach(el => {
+                const key = el.getAttribute('data-key');
+                if(trans[key]) el.innerText = trans[key];
+            });
+        }
+
+        function addManualTodo(val = null) {
+            const input = document.getElementById('todo-manual-input');
+            const task = val || input.value.trim();
+            if(!task) return;
+            
+            const html = `
+                <label class="flex items-center space-x-3 p-4 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition animate-slideUp">
+                    <input type="checkbox" class="w-5 h-5 rounded accent-rose-500">
+                    <span class="font-medium text-sm text-slate-700">${task}</span>
+                </label>`;
+            document.getElementById('todo-list-container').insertAdjacentHTML('afterbegin', html);
+            input.value = "";
+        }
+
+        async function suggestTodo() {
+            const key = localStorage.getItem('wellista_key');
+            if(!key) { alert("API Key required for suggestions!"); openSettings(); return; }
+            const btn = event.currentTarget;
+            btn.innerHTML = `<div class="loading-spinner" style="width:14px; height:14px"></div>`;
+            try {
+                const res = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+                    body: JSON.stringify({ 
+                        model: "gpt-3.5-turbo", 
+                        messages: [{ role: "system", content: `You are a wellness sister. Based on Bio: ${bio.conditions.join(',')} and Day: ${document.getElementById('day-counter').innerText}, suggest 3 short daily tasks. Return ONLY as a comma separated list.` }],
+                        max_tokens: 50 
+                    })
+                });
+                const data = await res.json();
+                const tasks = data.choices[0].message.content.split(',');
+                tasks.forEach(t => addManualTodo(t.trim()));
+            } catch (e) {
+                addManualTodo("Light stretching");
+                addManualTodo("Eat iron-rich meal");
+            }
+            btn.innerHTML = `<i data-lucide="sparkles" class="w-3 h-3 mr-1"></i> AI Suggest`;
+            lucide.createIcons();
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            document.querySelector(`.nav-link[data-tab="${tabName}"]`).classList.add('active');
+            lucide.createIcons();
+        }
+
+        function addWater() {
+            waterVal += 0.25;
+            document.getElementById('water-display').innerText = waterVal.toFixed(1) + "L";
+        }
+
+        function setMood(mood, el) {
+            document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active'); activeMood = mood;
+        }
+
+        function setFlowColor(color, el) {
+            document.querySelectorAll('.blood-color-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active'); activeBlood = color;
+        }
+
+        async function askAI(mode) {
+            const key = localStorage.getItem('wellista_key');
+            if(!key) { openSettings(); return; }
+            const input = mode === 'judge' ? document.getElementById('ai-chef-input').value : document.getElementById('log-meal-input').value;
+            document.getElementById('ai-modal').classList.add('active');
+            document.getElementById('modal-body').innerHTML = '<div class="flex justify-center mt-10"><div class="loading-spinner"></div></div>';
+            try {
+                const res = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+                    body: JSON.stringify({ 
+                        model: "gpt-3.5-turbo", 
+messages: [
+    { 
+        role: "system", 
+        content: `You are a helpful Indian Sister & Bio-Chef. 
+        User Bio: ${JSON.stringify(bio)}.
+        
+        RULES:
+        1. Start with "RATING: X/10" (Judge the healthiness for their specific conditions).
+        2. Give the dish a catchy Indian NAME.
+        3. Provide a clear, step-by-step RECIPE.
+        4. Explain why this recipe is good for their specific health conditions (PCOS, Thyroid, etc.).
+        5. Use warm, sisterly language.` 
+    }, 
+    { 
+        role: "user", 
+        content: `I have these ingredients: ${input}. Suggest a full recipe for me.` 
+    }
+],                        max_tokens: 500 
+                    })
+                });
+                const data = await res.json();
+                const text = data.choices[0].message.content;
+                document.getElementById('modal-rating').innerText = (text.match(/\d+\/10/) || ["--/10"])[0];
+                document.getElementById('modal-body').innerText = text.replace(/\d+\/10/, "").trim();
+            } catch (e) { document.getElementById('modal-body').innerText = "Connection error."; }
+        }
+
+        async function sendVent() {
+            const box = document.getElementById('vent-chat-box');
+            const input = document.getElementById('vent-input');
+            const key = localStorage.getItem('wellista_key');
+            if(!input.value || !key) return;
+            const userText = input.value;
+            box.insertAdjacentHTML('beforeend', `<div class="bg-rose-500 text-white p-4 rounded-3xl rounded-tr-none ml-auto max-w-[85%] mb-2 font-medium">${userText}</div>`);
+            input.value = "";
+            box.scrollTop = box.scrollHeight;
+            try {
+                const res = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+                    body: JSON.stringify({ model: "gpt-3.5-turbo", messages: [{ role: "system", content: "Compassionate sister. Lang: "+bio.lang }, { role: "user", content: userText }] })
+                });
+                const data = await res.json();
+                box.insertAdjacentHTML('beforeend', `<div class="bg-white p-5 rounded-3xl rounded-tl-none max-w-[85%] text-slate-600 border mb-2 font-medium">${data.choices[0].message.content}</div>`);
+                box.scrollTop = box.scrollHeight;
+            } catch (e) {}
+        }
+
+        function openSettings() { document.getElementById('settings-modal').classList.add('active'); }
+        function saveSettings() { localStorage.setItem('wellista_key', document.getElementById('settings-api-key').value.trim()); closeModal('settings-modal'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+        function logout() { localStorage.clear(); location.reload(); }
+        window.onload = initApp;
+    </script>
 </body>
 </html>
